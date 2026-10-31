@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FiChevronRight, FiMapPin } from "react-icons/fi";
+import { FiChevronRight, FiClock, FiMapPin } from "react-icons/fi";
 import { currentTime } from "../lib/currentTime";
-import { NIGHTS, VENUES, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
+import { NIGHTS, NIGHT_HOURS, VENUES, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
 
 // Pages are built ahead of time, so tonight's night is worked out in the browser, always in Kampala time.
 export default function WeekList() {
@@ -28,6 +28,9 @@ export default function WeekList() {
                 <span className="week-name">{night.name}</span>
                 <span className="week-venue">
                   <FiMapPin aria-hidden="true" /> {night.venue}, {nightLocation(night)}
+                </span>
+                <span className="week-venue">
+                  <FiClock aria-hidden="true" /> {NIGHT_HOURS.label}
                 </span>
               </span>
               {emblem && <Image src={emblem} alt="" width={32} height={32} loading="lazy" className="venue-emblem" />}

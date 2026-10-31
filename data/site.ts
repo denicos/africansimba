@@ -24,10 +24,10 @@ export const SITE = {
 };
 
 export const SOCIALS = {
-  instagram: "https://www.instagram.com/africansimbaevents/",
-  tiktok: "https://www.tiktok.com/@africansimbaevents",
-  x: "https://x.com/Afsimbaevents",
-  snapchat: "", // TODO: Snapchat URL
+  instagram: "https://www.instagram.com/africansimba_barackeffeck",
+  tiktok: "https://www.tiktok.com/@africansimba_1",
+  x: "https://x.com/African__Simba",
+  snapchat: "", // TODO: "African Simba TV" link, once the exact username is confirmed. The icon stays hidden until then.
   whatsappChannel: "", // TODO: WhatsApp channel URL
   facebook: "https://www.facebook.com/p/African-SIMBA-Events-100093632272961/",
   youtube: "https://www.youtube.com/@africansimbaevents",
@@ -55,7 +55,10 @@ export const PARTNERS = [
 
 // Our resident host, shown in "Meet Your Host" and on the night pages. The posters are set in data/nights.ts.
 export const HOST = {
-  name: "", // TODO: host name
-  bio: "", // TODO: short bio, 1 or 2 sentences. Hidden until filled in.
-  instagram: "", // TODO: Instagram URL. The "Follow on Instagram" button appears once this is filled in.
+  name: "African Simba",
+  title: "aka The Game Changer",
+  bio: "African Simba, aka The Game Changer, is the voice and energy behind African Simba Events. Five nights a week he hosts Kampala's biggest nights at Thrones, Nomad and Vanquish – great music, Martell at every table, and a crowd that never sits down.",
+  instagram: SOCIALS.instagram,
 };
+
+export const HOST_FULL_NAME = `${HOST.name} ${HOST.title}`;

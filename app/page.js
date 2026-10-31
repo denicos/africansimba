@@ -6,6 +6,7 @@ import HostSection from "../components/HostSection";
 import MartellShowcase from "../components/MartellShowcase";
 import PartnersSection from "../components/PartnersSection";
 import PhotoStrip from "../components/PhotoStrip";
+import TonightCard from "../components/TonightCard";
 import WeekList from "../components/WeekList";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { SITE } from "../data/site";
@@ -33,20 +34,23 @@ export default function HomePage() {
         />
         <HeroVideo />
         <div className="container hero-content">
-          <p className="eyebrow">Official Martell Brand Ambassador in Uganda</p>
-          <h1>Kampala nightlife, five nights a week</h1>
-          <p className="lead">
-            African Simba Events brings you the best weekly nights at Thrones, Nomad and Vanquish, with Martell at every
-            one.
-          </p>
-          <div className="button-row">
-            <a href="#this-week" className="btn btn-gold">
-              See this week
-            </a>
-            <WhatsAppButton action="book_table" item="Homepage hero" message="Hi African Simba, I want to book a table.">
-              Book a Table
-            </WhatsAppButton>
+          <div>
+            <p className="eyebrow">Official Martell Brand Ambassador in Uganda</p>
+            <h1>Kampala nightlife, five nights a week</h1>
+            <p className="lead">
+              African Simba Events brings you the best weekly nights at Thrones, Nomad and Vanquish, with Martell at every
+              one.
+            </p>
+            <div className="button-row">
+              <a href="#this-week" className="btn btn-gold">
+                See this week
+              </a>
+              <WhatsAppButton action="book_table" item="Homepage hero" message="Hi African Simba, I want to book a table.">
+                Book a Table
+              </WhatsAppButton>
+            </div>
           </div>
+          <TonightCard />
         </div>
       </section>
 

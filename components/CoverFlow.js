@@ -7,8 +7,8 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import Lightbox from "./Lightbox";
 import WhatsAppButton from "./WhatsAppButton";
-import { NIGHTS, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
-import { HOST } from "../data/site";
+import { NIGHTS, NIGHT_HOURS, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
+import { HOST_FULL_NAME } from "../data/site";
 import { currentTime } from "../lib/currentTime";
 import useRotation from "../lib/useRotation";
 import { nightMessages } from "../lib/whatsapp";
@@ -52,7 +52,9 @@ function DetailsPanel({ night, badge, venueLogo, isLive, actions }) {
             </span>
           </div>
           <p className="host-panel-meta host-step" style={{ "--step": 2 }}>
-            Hosted by {HOST.name || "our resident host"} · Official Martell night
+            {NIGHT_HOURS.label} · Official Martell night
+            <br />
+            Hosted by {HOST_FULL_NAME}
           </p>
         </div>
       </div>

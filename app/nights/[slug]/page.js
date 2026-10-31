@@ -6,8 +6,8 @@ import JsonLd from "../../../components/JsonLd";
 import PageHeader from "../../../components/PageHeader";
 import PhotoGallery from "../../../components/PhotoGallery";
 import WhatsAppButton from "../../../components/WhatsAppButton";
-import { NIGHTS, VENUES, getNight, nextOccurrence, nightLocation } from "../../../data/nights";
-import { HOST, SITE } from "../../../data/site";
+import { NIGHTS, NIGHT_HOURS, VENUES, getNight, nextDay, nextOccurrence, nightLocation } from "../../../data/nights";
+import { HOST_FULL_NAME, SITE } from "../../../data/site";
 import { OG_IMAGE, pageMetadata } from "../../../lib/metadata";
 import { listPhotos } from "../../../lib/photos";
 import { nightMessages } from "../../../lib/whatsapp";
@@ -34,7 +34,8 @@ function eventJsonLd(night) {
     repeatFrequency: "P1W",
     byDay: `https://schema.org/${night.weekday}`,
     scheduleTimezone: "Africa/Kampala",
-    ...(night.startTime && { startTime: night.startTime }),
+    startTime: NIGHT_HOURS.start,
+    endTime: NIGHT_HOURS.end,
   };
   const date = nextOccurrence(night);
 
@@ -43,7 +44,8 @@ function eventJsonLd(night) {
     "@type": "Event",
     name: night.name,
     description: `${night.tagline} An official Martell night by African Simba Events in Kampala.`,
-    startDate: night.startTime ? `${date}T${night.startTime}:00+03:00` : date,
+    startDate: `${date}T${NIGHT_HOURS.start}:00+03:00`,
+    endDate: `${nextDay(date)}T${NIGHT_HOURS.end}:00+03:00`,
     eventSchedule: schedule,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
@@ -107,7 +109,7 @@ export default function NightPage({ params }) {
             <li>
               <FiClock aria-hidden="true" />
               <span>
-                <strong>Starts</strong> {night.startTime || "Time to be confirmed, ask us on WhatsApp"}
+                <strong>Hours</strong> {NIGHT_HOURS.label}
               </span>
             </li>
           </ul>
@@ -120,7 +122,7 @@ export default function NightPage({ params }) {
             <span className="hosted-by-avatar">
               <Image src={night.poster.src} alt="" fill sizes="128px" quality={70} style={avatarStyle(night.poster.face)} />
             </span>
-            Hosted by {HOST.name || "our resident host"}
+            Hosted by {HOST_FULL_NAME}
           </p>
 
           <div className="button-row">

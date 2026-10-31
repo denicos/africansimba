@@ -2,7 +2,7 @@ import { FaInstagram } from "react-icons/fa6";
 
 import CoverFlow from "./CoverFlow";
 import { VENUES } from "../data/nights";
-import { HOST } from "../data/site";
+import { HOST, HOST_FULL_NAME } from "../data/site";
 import { venueLogo } from "../lib/photos";
 
 export default function HostSection() {
@@ -15,6 +15,7 @@ export default function HostSection() {
           <div>
             <p className="eyebrow">Your host, five nights a week</p>
             <h2 id="host-heading">Meet Your Host</h2>
+            <p className="host-name">{HOST_FULL_NAME}</p>
             {HOST.bio && <p className="lead">{HOST.bio}</p>}
           </div>
           {HOST.instagram && (

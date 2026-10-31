@@ -66,10 +66,10 @@ export const OTHER_BOTTLES: Bottle[] = [
     description: "Crisp, clean tequila in a hand-painted ceramic decanter.",
   },
   {
-    name: "Johnnie Walker Black Label",
-    image: "black-label.png",
-    alt: "Johnnie Walker whisky bottle beside its box",
-    description: "Blended Scotch whisky, aged 12 years. Smoky and smooth.",
+    name: "Johnnie Walker Blue Label",
+    image: "blue-label.png",
+    alt: "Johnnie Walker Blue Label whisky bottle beside its box",
+    description: "Rare blended Scotch whisky, silky smooth with a long, smoky finish.",
   },
   {
     name: "Belaire Rosé",
