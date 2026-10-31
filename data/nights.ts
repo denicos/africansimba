@@ -85,6 +85,13 @@ export function kampalaWeekday(date = new Date()) {
   return new Intl.DateTimeFormat("en-US", { weekday: "long", timeZone: "Africa/Kampala" }).format(date);
 }
 
+// A night runs until 6:00 AM, so Saturday 1:00 AM in Kampala still counts as Friday night.
+const NIGHT_END_HOURS = 6;
+
+export function kampalaNightWeekday(date = new Date()) {
+  return kampalaWeekday(new Date(date.getTime() - NIGHT_END_HOURS * 60 * 60 * 1000));
+}
+
 // Tonight's night, or the next one on days without a night (Tuesday, Thursday).
 export function getHighlight(weekday: string) {
   const today = WEEK.indexOf(weekday);

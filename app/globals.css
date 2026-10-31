@@ -500,6 +500,83 @@ button.photo-tile:hover img {
   transform: scale(1.04);
 }
 
+/* Homepage photo strip. Change --strip-duration to make one full loop faster or slower. */
+.photo-strip {
+  --strip-duration: 60s;
+  --strip-tile: calc((100vw - 40px) / 2);
+  --strip-gap: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--strip-gap);
+}
+
+.photo-strip-row {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-gold) transparent;
+}
+
+.photo-strip-track {
+  display: flex;
+  width: max-content;
+}
+
+.photo-strip-set {
+  display: flex;
+  gap: var(--strip-gap);
+  padding-inline: 16px;
+}
+
+.photo-strip-set[aria-hidden] {
+  display: none;
+}
+
+.photo-strip .photo-tile {
+  width: var(--strip-tile);
+}
+
+/* Without reduced motion: two copies of the photos slide by exactly one copy, so the loop has no visible join. */
+@media (prefers-reduced-motion: no-preference) {
+  .photo-strip-row {
+    overflow-x: clip;
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .photo-strip-row:active {
+    cursor: grabbing;
+  }
+
+  .photo-strip-track {
+    animation: photo-strip-slide var(--strip-duration) linear infinite;
+    will-change: transform;
+  }
+
+  .is-reverse .photo-strip-track {
+    animation-direction: reverse;
+  }
+
+  .photo-strip-set {
+    padding-inline: 0 var(--strip-gap);
+  }
+
+  .photo-strip-set[aria-hidden] {
+    display: flex;
+  }
+
+  .photo-strip .photo-tile img {
+    pointer-events: none;
+  }
+}
+
+@keyframes photo-strip-slide {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 .photo-placeholder {
   display: flex;
   align-items: center;
@@ -1026,8 +1103,9 @@ html[data-age-ok] .age-gate {
     gap: 12px;
   }
 
-  .photo-grid-static {
-    grid-template-columns: repeat(4, 1fr);
+  .photo-strip {
+    --strip-tile: calc((min(100vw, 1200px) - 68px) / 4);
+    --strip-gap: 12px;
   }
 
   .bottle-grid {

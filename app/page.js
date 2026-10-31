@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import PartnersSection from "../components/PartnersSection";
+import PhotoStrip from "../components/PhotoStrip";
 import WeekList from "../components/WeekList";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { SITE } from "../data/site";
@@ -13,9 +14,6 @@ export const metadata = pageMetadata({
   description: SITE.description,
   path: "/",
 });
-
-const PREVIEW_SOURCES = ["06e53219", "c9210846", "1de13528", "d8886efb"];
-const previewPhotos = PREVIEW_SOURCES.map((id) => photos.find((photo) => photo.src.includes(id)));
 
 export default function HomePage() {
   return (
@@ -90,20 +88,9 @@ export default function HomePage() {
         <div className="container">
           <p className="eyebrow">Gallery</p>
           <h2 id="gallery-heading">Inside our nights</h2>
-          <ul className="photo-grid photo-grid-static">
-            {previewPhotos.map((photo) => (
-              <li key={photo.src} className="photo-tile">
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(max-width: 600px) 50vw, 25vw"
-                  quality={65}
-                  loading="lazy"
-                />
-              </li>
-            ))}
-          </ul>
+        </div>
+        <PhotoStrip photos={photos} />
+        <div className="container">
           <div className="button-row">
             <Link href="/gallery" className="btn btn-outline">
               See the full gallery
