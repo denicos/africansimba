@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import HeroVideo from "../components/HeroVideo";
 import HostSection from "../components/HostSection";
 import MartellShowcase from "../components/MartellShowcase";
 import PartnersSection from "../components/PartnersSection";
@@ -22,14 +23,15 @@ export default function HomePage() {
     <>
       <section className="hero">
         <Image
-          src="/new/1c51433f-f816-4ff9-9eac-9e49dbd7f66c 3.webp"
-          alt="Crowd under teal lights with a flame show at an African Simba Events night in Kampala"
+          src="/videos/hero-poster.jpg"
+          alt="Crowd dancing under warm gold lights at a nightclub"
           fill
           priority
           sizes="100vw"
           quality={70}
           className="hero-image"
         />
+        <HeroVideo />
         <div className="container hero-content">
           <p className="eyebrow">Official Martell Brand Ambassador in Uganda</p>
           <h1>Kampala nightlife, five nights a week</h1>
