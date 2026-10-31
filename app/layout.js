@@ -3,11 +3,11 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 import Analytics from "../components/Analytics";
+import FloatingWhatsApp from "../components/FloatingWhatsApp";
 import Footer from "../components/Footer";
 import JsonLd from "../components/JsonLd";
 import NavBar from "../components/NavBar";
 import ScrollReveal from "../components/ScrollReveal";
-import WhatsAppButton from "../components/WhatsAppButton";
 import { SITE, SOCIALS } from "../data/site";
 import { OG_IMAGE } from "../lib/metadata";
 
@@ -75,13 +75,7 @@ export default function RootLayout({ children }) {
         <NavBar />
         <main>{children}</main>
         <Footer />
-        <WhatsAppButton
-          action="general_enquiry"
-          item="Floating button"
-          message="Hi African Simba, I have a question."
-          className="whatsapp-float"
-          label="Chat with African Simba Events on WhatsApp"
-        />
+        <FloatingWhatsApp />
         <ScrollReveal />
         <Analytics />
       </body>

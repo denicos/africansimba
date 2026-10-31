@@ -6,7 +6,7 @@ import HostSection from "../components/HostSection";
 import MartellShowcase from "../components/MartellShowcase";
 import PartnersSection from "../components/PartnersSection";
 import PhotoStrip from "../components/PhotoStrip";
-import TonightCard from "../components/TonightCard";
+import TonightCard, { HeroGlow, TonightTitle } from "../components/TonightCard";
 import WeekList from "../components/WeekList";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { SITE } from "../data/site";
@@ -22,6 +22,7 @@ export const metadata = pageMetadata({
 export default function HomePage() {
   return (
     <>
+      <TonightTitle />
       <section className="hero">
         <Image
           src="/videos/hero-poster.jpg"
@@ -33,6 +34,7 @@ export default function HomePage() {
           className="hero-image"
         />
         <HeroVideo />
+        <HeroGlow />
         <div className="container hero-content">
           <div>
             <p className="eyebrow">Official Martell Brand Ambassador in Uganda</p>

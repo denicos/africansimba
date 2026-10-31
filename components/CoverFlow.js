@@ -7,9 +7,9 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import Lightbox from "./Lightbox";
 import WhatsAppButton from "./WhatsAppButton";
-import { NIGHTS, NIGHT_HOURS, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
+import { NIGHTS, NIGHT_HOURS, nightLocation } from "../data/nights";
 import { HOST_FULL_NAME } from "../data/site";
-import { currentTime } from "../lib/currentTime";
+import useTonight from "../lib/useTonight";
 import useRotation from "../lib/useRotation";
 import { nightMessages } from "../lib/whatsapp";
 
@@ -85,24 +85,25 @@ export default function CoverFlow({ venueLogos }) {
   const [active, setActive] = useState(0);
   const [wraps, setWraps] = useState({});
   const [start, setStart] = useState(null);
-  const [highlight, setHighlight] = useState(null);
+  const tonight = useTonight();
   const [isSettled, setIsSettled] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const night = NIGHTS[active];
 
-  // Starts on tonight's night (or the next one). Pages are built ahead of time, so this is worked out in the browser.
+  // Starts on tonight's night, and turns to the new night at 6 AM if the page is left open.
+  const tonightIndex = NIGHTS.findIndex((item) => item.slug === tonight?.night.slug);
   useEffect(() => {
-    const current = getHighlight(kampalaNightWeekday(currentTime()));
-    const index = NIGHTS.findIndex((item) => item.slug === current?.slug);
-    setHighlight(current);
-    if (index >= 0) {
-      setActive(index);
-      setStart(index);
+    if (tonightIndex < 0) return;
+    if (start === null) {
+      setActive(tonightIndex);
+      setStart(tonightIndex);
+      const frame = requestAnimationFrame(() => requestAnimationFrame(() => setIsSettled(true)));
+      return () => cancelAnimationFrame(frame);
     }
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setIsSettled(true)));
-    return () => cancelAnimationFrame(frame);
-  }, []);
+    goTo(tonightIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tonightIndex]);
 
   useEffect(() => setPause("lightbox", isLightboxOpen), [isLightboxOpen, setPause]);
 
@@ -196,7 +197,7 @@ export default function CoverFlow({ venueLogos }) {
     else goTo(index);
   };
 
-  const badge = highlight?.slug === night.slug ? highlight.label : null;
+  const badge = tonight?.night.slug === night.slug ? tonight.badge : null;
   const panel = (
     <DetailsPanel
       night={night}

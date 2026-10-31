@@ -11,11 +11,12 @@ export type Night = {
   tagline: string;
   // The host poster. face is for the small "Hosted by" photo: where the face centre is, measured in
   // poster widths from the top left, and how far to zoom in on it.
-  poster: { src: string; width: number; height: number; face: { x: number; y: number; zoom: number } };
+  // glow is the poster's main colour, for the soft light behind the homepage hero on that night.
+  poster: { src: string; width: number; height: number; glow: string; face: { x: number; y: number; zoom: number } };
 };
 
 // Every night runs at the same times, in Kampala time. A night ends the next morning.
-export const NIGHT_HOURS = { start: "18:00", end: "06:00", label: "6 PM – 6 AM" };
+export const NIGHT_HOURS = { start: "18:00", end: "06:00", label: "6 PM – 6 AM", startLabel: "6 PM" };
 
 export const VENUES: Record<string, { area: string; emblem?: string }> = {
   Thrones: { area: "Bugolobi" },
@@ -32,7 +33,7 @@ export const NIGHTS: Night[] = [
     area: VENUES.Thrones.area,
     folder: "bandali",
     tagline: "Start the week right, with Martell at Thrones.",
-    poster: { src: "/images/nights/bandali/bandali-mondays-host.png", width: 588, height: 783, face: { x: 0.57, y: 0.54, zoom: 1.75 } },
+    poster: { src: "/images/nights/bandali/bandali-mondays-host.png", width: 588, height: 783, glow: "#d9822b", face: { x: 0.57, y: 0.54, zoom: 1.75 } },
   },
   {
     slug: "wahala-wednesday",
@@ -42,7 +43,7 @@ export const NIGHTS: Night[] = [
     area: VENUES.Thrones.area,
     folder: "wahala",
     tagline: "Midweek party madness at Thrones.",
-    poster: { src: "/images/nights/wahala/wahala-wednesday-host.png", width: 558, height: 738, face: { x: 0.55, y: 0.34, zoom: 2.6 } },
+    poster: { src: "/images/nights/wahala/wahala-wednesday-host.png", width: 558, height: 738, glow: "#2f45ff", face: { x: 0.55, y: 0.34, zoom: 2.6 } },
   },
   {
     slug: "swift-fridays",
@@ -52,7 +53,7 @@ export const NIGHTS: Night[] = [
     area: VENUES.Nomad.area,
     folder: "swift",
     tagline: "Kick off the weekend at Nomad.",
-    poster: { src: "/images/nights/swift/swift-fridays-host.png", width: 574, height: 743, face: { x: 0.53, y: 0.285, zoom: 2.6 } },
+    poster: { src: "/images/nights/swift/swift-fridays-host.png", width: 574, height: 743, glow: "#1f3bd1", face: { x: 0.53, y: 0.285, zoom: 2.6 } },
   },
   {
     slug: "illicit-saturday",
@@ -62,7 +63,7 @@ export const NIGHTS: Night[] = [
     area: VENUES.Vanquish.area,
     folder: "illicit",
     tagline: "Saturday night, the way it should be, at Vanquish.",
-    poster: { src: "/images/nights/illicit/illicit-saturday-host.png", width: 610, height: 761, face: { x: 0.71, y: 0.52, zoom: 2.4 } },
+    poster: { src: "/images/nights/illicit/illicit-saturday-host.png", width: 610, height: 761, glow: "#2a4bff", face: { x: 0.71, y: 0.52, zoom: 2.4 } },
   },
   {
     slug: "belle-vie-sunday",
@@ -72,7 +73,7 @@ export const NIGHTS: Night[] = [
     area: VENUES.Vanquish.area,
     folder: "belle-vie",
     tagline: "Close the week living the good life at Vanquish.",
-    poster: { src: "/images/nights/belle-vie/belle-vie-sunday-host.png", width: 547, height: 622, face: { x: 0.66, y: 0.44, zoom: 2.8 } },
+    poster: { src: "/images/nights/belle-vie/belle-vie-sunday-host.png", width: 547, height: 622, glow: "#2146c7", face: { x: 0.66, y: 0.44, zoom: 2.8 } },
   },
 ];
 
@@ -102,27 +103,44 @@ export function kampalaNightWeekday(date = new Date()) {
 }
 
 // Tonight's night, or the next one on days without a night (Tuesday, Thursday).
-export function getHighlight(weekday: string) {
+function getHighlight(weekday: string) {
   const today = WEEK.indexOf(weekday);
   for (let offset = 0; offset < WEEK.length; offset++) {
     const night = NIGHTS.find((n) => n.weekday === WEEK[(today + offset) % WEEK.length]);
-    if (night) return { slug: night.slug, label: offset === 0 ? "Tonight" : "Next up", offset };
+    if (night) return { slug: night.slug, offset };
   }
   return null;
 }
 
-// Tonight's night (or the next one), and whether it has started. msUntilStart is 0 once it's happening.
+// The one answer to "what's on?", used by the whole site: tonight's night, or the next one on Tuesday and Thursday.
 export function nightStatus(now = new Date()) {
   const highlight = getHighlight(kampalaNightWeekday(now));
   if (!highlight) return null;
   // Time since 6:00 AM on the day this night belongs to, which is when one night hands over to the next.
   const sinceDayStart = (now.getTime() + (KAMPALA_UTC_OFFSET_HOURS - NIGHT_END_HOURS) * HOUR_MS) % DAY_MS;
   const msUntilStart = highlight.offset * DAY_MS + (NIGHT_START_HOURS - NIGHT_END_HOURS) * HOUR_MS - sinceDayStart;
+  const night = getNight(highlight.slug) as Night;
+  const isHappening = msUntilStart <= 0;
+  const isNextUp = highlight.offset > 0;
+
+  let badge = "Tonight";
+  let statusText = `Tonight · starts ${NIGHT_HOURS.startLabel}`;
+  if (isHappening) {
+    badge = "Happening now";
+    statusText = "Happening now";
+  } else if (isNextUp) {
+    badge = "Next up";
+    statusText = `Next up · ${night.weekday}`;
+  }
+
   return {
-    night: getNight(highlight.slug) as Night,
-    label: highlight.label,
-    isHappening: msUntilStart <= 0,
+    night,
+    badge,
+    statusText,
+    isHappening,
+    isNextUp,
     msUntilStart: Math.max(msUntilStart, 0),
+    key: `${night.slug}|${badge}|${Math.ceil(Math.max(msUntilStart, 0) / 60000)}`,
   };
 }
 

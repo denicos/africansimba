@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PARTNERS } from "../data/site";
+import useTonight from "../lib/useTonight";
 
 const MAX_TILT = 8;
 const DRAG_THRESHOLD = 6;
@@ -16,6 +17,8 @@ function shineOrder(partner) {
 
 function PartnerCard({ partner, index, hidden }) {
   const frame = useRef(null);
+  const tonight = useTonight();
+  const isTonight = tonight?.night.venue === partner.name;
 
   const handlePointerMove = (event) => {
     if (event.pointerType !== "mouse" || !window.matchMedia(TILT_QUERY).matches) return;
@@ -41,7 +44,7 @@ function PartnerCard({ partner, index, hidden }) {
     <li className={partner.featured ? "is-featured" : undefined}>
       <Link
         href={partner.href}
-        className={partner.featured ? "partner-card is-featured" : "partner-card"}
+        className={["partner-card", partner.featured && "is-featured", isTonight && "is-tonight"].filter(Boolean).join(" ")}
         style={{ "--i": index, "--shine": shineOrder(partner) }}
         tabIndex={hidden ? -1 : undefined}
         draggable={false}

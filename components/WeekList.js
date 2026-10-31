@@ -1,24 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FiChevronRight, FiClock, FiMapPin } from "react-icons/fi";
-import { currentTime } from "../lib/currentTime";
-import { NIGHTS, NIGHT_HOURS, VENUES, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
+import { NIGHTS, NIGHT_HOURS, VENUES, nightLocation } from "../data/nights";
+import useTonight from "../lib/useTonight";
 
-// Pages are built ahead of time, so tonight's night is worked out in the browser, always in Kampala time.
 export default function WeekList() {
-  const [highlight, setHighlight] = useState(null);
-
-  useEffect(() => {
-    setHighlight(getHighlight(kampalaNightWeekday(currentTime())));
-  }, []);
+  const tonight = useTonight();
 
   return (
     <ul className="week-list">
       {NIGHTS.map((night) => {
-        const isHighlighted = highlight?.slug === night.slug;
+        const isHighlighted = tonight?.night.slug === night.slug;
         const emblem = VENUES[night.venue].emblem;
         return (
           <li key={night.slug}>
@@ -34,7 +28,11 @@ export default function WeekList() {
                 </span>
               </span>
               {emblem && <Image src={emblem} alt="" width={32} height={32} loading="lazy" className="venue-emblem" />}
-              {isHighlighted && <span className="week-badge">{highlight.label}</span>}
+              {isHighlighted && (
+                <span key={tonight.badge} className="week-badge is-fading">
+                  {tonight.badge}
+                </span>
+              )}
               <FiChevronRight className="week-arrow" aria-hidden="true" />
             </Link>
           </li>
