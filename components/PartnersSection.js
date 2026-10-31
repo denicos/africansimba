@@ -7,7 +7,15 @@ function PartnerCard({ partner }) {
     <>
       <span className="partner-logo">
         {partner.logo ? (
-          <Image src={partner.logo} alt={`${partner.name} logo`} width={partner.logoWidth} height={partner.logoHeight} sizes="160px" loading="lazy" />
+          <Image
+            src={partner.logo}
+            alt={`${partner.name} logo`}
+            width={partner.logoWidth}
+            height={partner.logoHeight}
+            sizes="160px"
+            loading="lazy"
+            className={partner.logoOnBlack ? "logo-on-black" : undefined}
+          />
         ) : (
           <span className="partner-wordmark">{partner.name}</span>
         )}

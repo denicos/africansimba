@@ -12,10 +12,10 @@ export type Night = {
   tagline: string;
 };
 
-export const VENUES: Record<string, { area: string }> = {
+export const VENUES: Record<string, { area: string; emblem?: string }> = {
   Thrones: { area: "Bugolobi" },
   Nomad: { area: "Ggaba Road" },
-  Vanquish: { area: "" }, // TODO: Vanquish area in Kampala
+  Vanquish: { area: "", emblem: "/images/partners/vanquish-emblem.webp" }, // TODO: Vanquish area in Kampala
 };
 
 export const NIGHTS: Night[] = [

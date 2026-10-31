@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import AgeGate from "../../components/AgeGate";
 import PageHeader from "../../components/PageHeader";
+import RevealList from "../../components/RevealList";
 import WhatsAppButton from "../../components/WhatsAppButton";
 import { MARTELL_BOTTLES, OTHER_BOTTLES } from "../../data/drinks";
 import { MARTELL_LOGO } from "../../data/site";
@@ -76,11 +77,11 @@ export default function DrinksPage() {
             />
             <h2 id="martell-heading">Martell · Official Brand Ambassador in Uganda</h2>
           </div>
-          <ul className="bottle-grid bottle-grid-large">
+          <RevealList className="bottle-grid bottle-grid-large">
             {MARTELL_BOTTLES.map((bottle) => (
               <BottleCard key={bottle.name} bottle={bottle} large />
             ))}
-          </ul>
+          </RevealList>
         </div>
       </section>
 

@@ -423,6 +423,11 @@ h3 {
   font-weight: 700;
 }
 
+.venue-emblem {
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
 .week-arrow {
   flex-shrink: 0;
   color: var(--text-muted);
@@ -458,6 +463,39 @@ h3 {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.night-venue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.hosted-by {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  font-weight: 500;
+}
+
+/* The poster is zoomed in on the face. Move transform-origin if a new poster has the face somewhere else. */
+.hosted-by-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border: 1px solid var(--clr-primary-3);
+  border-radius: 50%;
+}
+
+.hosted-by-avatar img {
+  object-fit: cover;
+  object-position: top;
+  transform: scale(2.6);
+  transform-origin: 56% 19%;
 }
 
 .night-details-stacked li {
@@ -736,7 +774,7 @@ button.photo-tile:hover img {
 }
 
 .bottle-card-large .bottle-image {
-  aspect-ratio: 5 / 4;
+  background: radial-gradient(circle at 50% 45%, rgba(239, 178, 9, 0.14), #0a0a0a 72%);
 }
 
 .bottle-image img {
@@ -801,6 +839,241 @@ button.photo-tile:hover img {
   margin: 0;
 }
 
+/* Homepage Martell showcase */
+.martell-showcase {
+  display: grid;
+  gap: 16px;
+}
+
+.martell-stage {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1d1a12, #0a0a0a 55%, #000);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.martell-stage::before {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  background: radial-gradient(circle, rgba(239, 178, 9, 0.3), transparent 68%);
+}
+
+.martell-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.05);
+  transition: opacity 0.9s ease, transform 1.2s ease, visibility 0s linear 0.9s;
+  will-change: opacity, transform;
+}
+
+.martell-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.9s ease, transform 1.2s ease, visibility 0s;
+}
+
+.martell-slide img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-small);
+}
+
+.martell-tag {
+  color: var(--clr-primary-3);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.martell-name {
+  font-family: var(--font-serif);
+  font-size: 1.625rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.martell-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.martell-dots {
+  display: flex;
+  margin-inline: -4px;
+}
+
+.martell-dot {
+  display: flex;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  padding-inline: 4px;
+}
+
+.martell-dot span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(239, 178, 9, 0.28);
+  border-radius: 2px;
+}
+
+.martell-dot i {
+  display: block;
+  height: 100%;
+  background: var(--clr-primary-3);
+}
+
+/* Reduced motion: every bottle at once, no rotation */
+.martell-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.martell-grid .martell-stage {
+  margin-bottom: 8px;
+}
+
+.martell-grid img {
+  object-fit: contain;
+  padding: 12px;
+}
+
+.martell-grid .martell-name {
+  font-size: 1.125rem;
+  margin-bottom: 8px;
+}
+
+/* Meet your host */
+.host-section {
+  background: radial-gradient(ellipse at 25% 50%, rgba(239, 178, 9, 0.08), transparent 60%);
+  border-top: 1px solid var(--border);
+}
+
+.host-stack {
+  --rank-front: rotate(-2deg);
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1 / 1.08;
+  margin-inline: auto;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.host-stack:active {
+  cursor: grabbing;
+}
+
+.host-card {
+  position: absolute;
+  top: 6%;
+  left: 17%;
+  width: 66%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transform: translateX(var(--drag, 0px)) var(--rank);
+  transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+.host-card[data-rank="0"] {
+  --rank: var(--rank-front);
+  z-index: 3;
+}
+
+.host-card[data-rank="1"] {
+  --rank: translateX(21%) rotate(6deg) scale(0.94);
+  z-index: 2;
+}
+
+.host-card[data-rank="2"] {
+  --rank: translateX(-21%) rotate(-8deg) scale(0.9);
+  z-index: 1;
+}
+
+.host-card.is-dragging {
+  transition: none;
+}
+
+.host-card img {
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.host-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.4;
+  transition: opacity 0.7s ease;
+}
+
+.host-card[data-rank="0"]::after {
+  opacity: 0;
+}
+
+.host-name {
+  margin-bottom: 8px;
+  color: var(--clr-primary-3);
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.host-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.host-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  color: var(--clr-primary-3);
+  border: 1px solid var(--border-gold);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.host-chip:hover {
+  background: rgba(239, 178, 9, 0.12);
+  border-color: var(--clr-primary-3);
+}
+
 /* Partners */
 .partner-martell {
   display: flex;
@@ -858,7 +1131,25 @@ a.partner-card:hover {
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: 88px;
+  max-height: 72px;
+}
+
+/* For logos with a black background: the black disappears into the dark card. */
+.logo-on-black {
+  mix-blend-mode: lighten;
+}
+
+@media (hover: hover) {
+  .partner-logo > * {
+    opacity: 0.72;
+    filter: grayscale(0.5);
+    transition: opacity 0.25s ease, filter 0.25s ease;
+  }
+
+  .partner-card:hover .partner-logo > * {
+    opacity: 1;
+    filter: none;
+  }
 }
 
 .partner-wordmark {
@@ -883,15 +1174,8 @@ a.partner-card:hover {
   align-items: center;
 }
 
-.split-image {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border-radius: var(--radius);
-}
-
-.split-image img {
-  object-fit: cover;
+.split > * {
+  min-width: 0;
 }
 
 /* Contact */
@@ -1095,6 +1379,104 @@ html[data-age-ok] .age-gate {
   margin-bottom: 4px;
   color: #fff;
   font-weight: 600;
+}
+
+/* Motion for the showcase, the host cards and the /drinks cards. Only transform and opacity move, so it stays smooth. */
+@media (prefers-reduced-motion: no-preference) {
+  .martell-caption {
+    animation: soft-rise 0.7s ease backwards;
+  }
+
+  .martell-dot i {
+    transform-origin: left;
+    animation: martell-progress 4s linear forwards;
+  }
+
+  .martell-showcase.is-paused .martell-dot i {
+    animation-play-state: paused;
+  }
+
+  .host-card.is-leaving {
+    animation: host-shuffle-move 0.8s ease-in-out, host-shuffle-layer 0.8s linear;
+  }
+
+  @media (hover: hover) {
+    .bottle-card-large {
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .bottle-card-large:hover {
+      border-color: var(--clr-primary-3);
+      box-shadow: 0 12px 36px -8px rgba(239, 178, 9, 0.35);
+      transform: translateY(-4px);
+    }
+  }
+}
+
+/* Cards wait for RevealList to show them. If the page's JavaScript never arrives, they appear anyway after 4 seconds. */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  .reveal-list > :not(.is-visible) {
+    opacity: 0;
+    animation: reveal-fallback 0.4s ease 4s forwards;
+  }
+
+  .reveal-list.is-armed > :not(.is-visible) {
+    animation: none;
+  }
+
+  .reveal-list > .is-visible {
+    animation: soft-rise-far 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+}
+
+@keyframes soft-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes soft-rise-far {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@keyframes reveal-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes martell-progress {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes host-shuffle-move {
+  0% {
+    transform: translateX(var(--drag, 0px)) var(--rank-front);
+  }
+  45% {
+    transform: translateX(calc(var(--swipe, 1) * 62%)) rotate(calc(var(--swipe, 1) * 9deg));
+  }
+  100% {
+    transform: var(--rank);
+  }
+}
+
+@keyframes host-shuffle-layer {
+  0%,
+  45% {
+    z-index: 5;
+  }
+  46%,
+  100% {
+    z-index: 0;
+  }
 }
 
 @media (min-width: 600px) {

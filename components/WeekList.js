@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { FiChevronRight, FiMapPin } from "react-icons/fi";
-import { NIGHTS, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
+import { NIGHTS, VENUES, getHighlight, kampalaNightWeekday, nightLocation } from "../data/nights";
 
 // TEMPORARY, development only: ?testDate=2026-11-01T02:00 overrides the current time, read as Kampala time.
 // Delete this function and its use below when testing is finished.
@@ -30,6 +31,7 @@ export default function WeekList() {
     <ul className="week-list">
       {NIGHTS.map((night) => {
         const isHighlighted = highlight?.slug === night.slug;
+        const emblem = VENUES[night.venue].emblem;
         return (
           <li key={night.slug}>
             <Link href={`/nights/${night.slug}`} className={isHighlighted ? "week-card is-highlighted" : "week-card"}>
@@ -40,6 +42,7 @@ export default function WeekList() {
                   <FiMapPin aria-hidden="true" /> {night.venue}, {nightLocation(night)}
                 </span>
               </span>
+              {emblem && <Image src={emblem} alt="" width={32} height={32} loading="lazy" className="venue-emblem" />}
               {isHighlighted && <span className="week-badge">{highlight.label}</span>}
               <FiChevronRight className="week-arrow" aria-hidden="true" />
             </Link>

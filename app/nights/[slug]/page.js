@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 
@@ -5,10 +6,10 @@ import JsonLd from "../../../components/JsonLd";
 import PageHeader from "../../../components/PageHeader";
 import PhotoGallery from "../../../components/PhotoGallery";
 import WhatsAppButton from "../../../components/WhatsAppButton";
-import { NIGHTS, getNight, nextOccurrence, nightLocation } from "../../../data/nights";
-import { SITE } from "../../../data/site";
+import { NIGHTS, VENUES, getNight, nextOccurrence, nightLocation } from "../../../data/nights";
+import { HOST, SITE } from "../../../data/site";
 import { OG_IMAGE, pageMetadata } from "../../../lib/metadata";
-import { listPhotos } from "../../../lib/photos";
+import { hostPoster, listPhotos } from "../../../lib/photos";
 import { nightMessages } from "../../../lib/whatsapp";
 
 export const dynamicParams = false;
@@ -71,6 +72,9 @@ export default function NightPage({ params }) {
     (_file, index) => `${night.name} at ${night.venue}, Kampala, photo ${index + 1}`
   );
 
+  const emblem = VENUES[night.venue].emblem;
+  const poster = hostPoster(night);
+
   return (
     <>
       <JsonLd data={eventJsonLd(night)} />
@@ -88,7 +92,11 @@ export default function NightPage({ params }) {
             <li>
               <FiMapPin aria-hidden="true" />
               <span>
-                <strong>Venue</strong> {night.venue}, {nightLocation(night)}
+                <strong>Venue</strong>
+                <span className="night-venue">
+                  {emblem && <Image src={emblem} alt="" width={28} height={28} className="venue-emblem" />}
+                  {night.venue}, {nightLocation(night)}
+                </span>
               </span>
             </li>
             <li>
@@ -102,6 +110,15 @@ export default function NightPage({ params }) {
           <p className="night-martell">
             Official Martell night by African Simba Events, Martell brand ambassador in Uganda
           </p>
+
+          {poster && (
+            <p className="hosted-by">
+              <span className="hosted-by-avatar">
+                <Image src={poster} alt="" fill sizes="128px" quality={70} />
+              </span>
+              Hosted by {HOST.name || "our resident host"}
+            </p>
+          )}
 
           <div className="button-row">
             <WhatsAppButton action="book_table" item={night.name} message={nightMessages.book(night)}>

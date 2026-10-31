@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import HostSection from "../components/HostSection";
+import MartellShowcase from "../components/MartellShowcase";
 import PartnersSection from "../components/PartnersSection";
 import PhotoStrip from "../components/PhotoStrip";
 import WeekList from "../components/WeekList";
@@ -54,6 +56,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <HostSection />
+
       <section className="section section-raised" aria-labelledby="drinks-heading">
         <div className="container split">
           <div>
@@ -69,16 +73,7 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="split-image">
-            <Image
-              src="/images/drinks/martell-xo.png"
-              alt="Bottle of Martell XO cognac"
-              fill
-              sizes="(max-width: 800px) 100vw, 50vw"
-              quality={70}
-              loading="lazy"
-            />
-          </div>
+          <MartellShowcase />
         </div>
       </section>
 
