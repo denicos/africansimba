@@ -545,7 +545,7 @@ h3 {
   display: grid;
   grid-template-columns: 78px minmax(0, 1fr);
   gap: 12px;
-  min-height: 200px;
+  min-height: 208px;
   padding: 14px;
   background: rgba(0, 0, 0, 0.66);
   border: 1px solid var(--border-gold);

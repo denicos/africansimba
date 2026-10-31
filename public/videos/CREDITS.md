@@ -2,13 +2,11 @@
 
 Files: hero-bg.mp4, hero-bg.webm, club-bg.mp4 (copy of hero-bg.mp4), hero-poster.jpg (a frame from the clip)
 
-- Title: Couple dancing together at a nightclub
-- Source: https://mixkit.co/free-stock-video/couple-dancing-together-at-a-nightclub-337/
-- Download used: https://assets.mixkit.co/videos/337/337-1080.mp4
-- Author: Mixkit (no individual author is named on the clip's page)
-- License: Mixkit Stock Video Free License, https://mixkit.co/license/#videoFree
-  The clip's page says: "Download this free stock video clip for commercial or personal use".
-  Mixkit describes its assets as usable "in commercial and personal projects without attribution".
+- Title: Dancing man and woman with glitters on faces
+- Source: https://www.pexels.com/video/dancing-man-and-woman-with-glitters-on-faces-7315374/
+- Download used: https://videos.pexels.com/video-files/7315374/7315374-hd_1920_1080_25fps.mp4
+- Author: Yan Krukau (https://www.pexels.com/@yankrukov)
+- License: Pexels License, https://www.pexels.com/license/ (the page for this series lists the license as "Free")
 - Downloaded: 31 October 2026
 
-Changes: scaled to 720p at 24 fps, audio removed, compressed for mobile data.
+Changes: scaled to 720p at 25 fps, audio removed, compressed for mobile data.

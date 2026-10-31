@@ -26,7 +26,7 @@ export default function HomePage() {
       <section className="hero">
         <Image
           src="/videos/hero-poster.jpg"
-          alt="Crowd dancing under warm gold lights at a nightclub"
+          alt="A couple dancing under neon lights at a nightclub"
           fill
           priority
           sizes="100vw"
