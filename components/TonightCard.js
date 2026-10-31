@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { FaWhatsapp } from "react-icons/fa6";
 
 import WhatsAppButton from "./WhatsAppButton";
 import { NIGHTS, NIGHT_HOURS, nightLocation } from "../data/nights";
 import useTonight from "../lib/useTonight";
+import { SITE } from "../data/site";
 import { nightMessages } from "../lib/whatsapp";
 
 const MINUTE_MS = 60 * 1000;
@@ -15,6 +17,12 @@ function formatCountdown(ms) {
   const minutes = Math.ceil(ms / MINUTE_MS);
   const hours = Math.floor(minutes / 60);
   return hours > 0 ? `${hours}h ${minutes % 60}m` : `${minutes}m`;
+}
+
+function liveDetail({ night, isHappening, isNextUp, msUntilStart }) {
+  if (isHappening) return `Ends ${NIGHT_HOURS.endLabel}`;
+  if (isNextUp) return `Starts ${night.weekday} ${NIGHT_HOURS.startLabel}`;
+  return `Starts in ${formatCountdown(msUntilStart)}`;
 }
 
 // A soft glow in the colours of tonight's poster, under the dark overlay. Each night's glow fades into the next.
@@ -49,6 +57,7 @@ export function TonightTitle() {
 
 export default function TonightCard() {
   const tonight = useTonight();
+  const [isHeld, setIsHeld] = useState(false);
   // Posters already shown stay in place, so the new one can crossfade over the old one.
   const shown = useRef(new Set());
   if (tonight) shown.current.add(tonight.night.slug);
@@ -67,7 +76,7 @@ export default function TonightCard() {
     );
   }
 
-  const { night, badge, statusText, isHappening, isNextUp, msUntilStart } = tonight;
+  const { night, badge } = tonight;
 
   return (
     <div className="tonight-card">
@@ -97,14 +106,28 @@ export default function TonightCard() {
         <span className="tonight-card-venue">
           {night.venue}, {nightLocation(night)} · {NIGHT_HOURS.label}
         </span>
-        <span className={isHappening ? "tonight-card-status is-happening" : "tonight-card-status"}>
-          {statusText}
-          {!isHappening && !isNextUp && ` · in ${formatCountdown(msUntilStart)}`}
-        </span>
+        <span className="tonight-card-status">{liveDetail(tonight)}</span>
       </div>
       <div className="tonight-card-action">
-        <WhatsAppButton action="book_table" item={night.name} message={nightMessages.book(night)} size="small">
-          Book a Table
+        <WhatsAppButton
+          action="book_table"
+          item={night.name}
+          message={nightMessages.book(night)}
+          variant={null}
+          icon={false}
+          className={isHeld ? "btn btn-small btn-alternating is-held" : "btn btn-small btn-alternating"}
+          label={`Book a table on WhatsApp ${SITE.phoneDisplay}`}
+          onPointerDown={() => setIsHeld(true)}
+          onPointerUp={() => setIsHeld(false)}
+          onPointerCancel={() => setIsHeld(false)}
+          onPointerLeave={() => setIsHeld(false)}
+        >
+          <span className="btn-alternating-book">
+            <FaWhatsapp aria-hidden="true" /> Book a Table
+          </span>
+          <span className="btn-alternating-number">
+            <FaWhatsapp aria-hidden="true" /> {SITE.phoneDisplay}
+          </span>
         </WhatsAppButton>
       </div>
     </div>

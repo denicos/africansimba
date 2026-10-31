@@ -16,7 +16,7 @@ export type Night = {
 };
 
 // Every night runs at the same times, in Kampala time. A night ends the next morning.
-export const NIGHT_HOURS = { start: "18:00", end: "06:00", label: "6 PM – 6 AM", startLabel: "6 PM" };
+export const NIGHT_HOURS = { start: "18:00", end: "06:00", label: "6 PM – 6 AM", startLabel: "6 PM", endLabel: "6 AM" };
 
 export const VENUES: Record<string, { area: string; emblem?: string }> = {
   Thrones: { area: "Bugolobi" },
@@ -124,19 +124,12 @@ export function nightStatus(now = new Date()) {
   const isNextUp = highlight.offset > 0;
 
   let badge = "Tonight";
-  let statusText = `Tonight · starts ${NIGHT_HOURS.startLabel}`;
-  if (isHappening) {
-    badge = "Happening now";
-    statusText = "Happening now";
-  } else if (isNextUp) {
-    badge = "Next up";
-    statusText = `Next up · ${night.weekday}`;
-  }
+  if (isHappening) badge = "Happening now";
+  else if (isNextUp) badge = "Next up";
 
   return {
     night,
     badge,
-    statusText,
     isHappening,
     isNextUp,
     msUntilStart: Math.max(msUntilStart, 0),

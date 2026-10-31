@@ -615,15 +615,6 @@ h3 {
   font-weight: 600;
 }
 
-.tonight-card-status.is-happening::before {
-  content: "";
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  background: var(--clr-primary-3);
-  border-radius: 50%;
-}
-
 .tonight-card-action {
   grid-column: 1 / -1;
   min-height: 44px;
@@ -631,6 +622,164 @@ h3 {
 
 .tonight-card-action .btn {
   width: 100%;
+}
+
+/* This card's Book a Table button only: green "Book a Table" and white phone number take turns. Both sit in the
+   same grid cell, so the size never changes. With reduced motion, it stays green with the number underneath. */
+.btn-alternating {
+  position: relative;
+  display: inline-grid;
+  justify-items: center;
+  gap: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #fff;
+}
+
+.btn-alternating::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--clr-whatsapp);
+}
+
+.btn-alternating-book,
+.btn-alternating-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-alternating-book {
+  color: #fff;
+}
+
+.btn-alternating-number {
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.btn-alternating-number svg {
+  display: none;
+}
+
+.btn-alternating.is-held,
+.btn-alternating:focus-visible {
+  box-shadow: 0 8px 24px -6px rgba(37, 211, 102, 0.65);
+  transform: translateY(-2px);
+}
+
+@media (hover: hover) {
+  .btn-alternating:hover {
+    box-shadow: 0 8px 24px -6px rgba(37, 211, 102, 0.65);
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-alternating-book,
+  .btn-alternating-number {
+    grid-area: 1 / 1;
+  }
+
+  .btn-alternating-number {
+    color: #000;
+    font-size: inherit;
+    font-weight: inherit;
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  .btn-alternating-number svg {
+    display: inline;
+  }
+
+  /* A 5 second loop: each state shows for 2.1 seconds, then 0.4 seconds to change. */
+  .btn-alternating::before {
+    animation: alternating-green 5s ease-in-out infinite;
+  }
+
+  .btn-alternating-book {
+    animation: alternating-book 5s ease-in-out infinite;
+  }
+
+  .btn-alternating-number {
+    animation: alternating-number 5s ease-in-out infinite;
+  }
+
+  /* Hover, touch or keyboard focus: stop on green "Book a Table". */
+  .btn-alternating.is-held::before,
+  .btn-alternating.is-held .btn-alternating-book,
+  .btn-alternating.is-held .btn-alternating-number,
+  .btn-alternating:focus-visible::before,
+  .btn-alternating:focus-visible .btn-alternating-book,
+  .btn-alternating:focus-visible .btn-alternating-number {
+    animation: none;
+  }
+
+  @media (hover: hover) {
+    .btn-alternating:hover::before,
+    .btn-alternating:hover .btn-alternating-book,
+    .btn-alternating:hover .btn-alternating-number {
+      animation: none;
+    }
+  }
+}
+
+@keyframes alternating-green {
+  0%,
+  42%,
+  100% {
+    opacity: 1;
+  }
+  50%,
+  92% {
+    opacity: 0;
+  }
+}
+
+@keyframes alternating-book {
+  0%,
+  42%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  50.01%,
+  92% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes alternating-number {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  50%,
+  92% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tonight-card {
+    min-height: 224px;
+  }
 }
 
 /* The neutral placeholder for the split second before tonight's night is known */
