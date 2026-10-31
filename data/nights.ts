@@ -123,7 +123,7 @@ export function nightStatus(now = new Date()) {
   const isHappening = msUntilStart <= 0;
   const isNextUp = highlight.offset > 0;
 
-  let badge = "Tonight";
+  let badge = `Tonight from ${NIGHT_HOURS.startLabel}`;
   if (isHappening) badge = "Happening now";
   else if (isNextUp) badge = "Next up";
 
@@ -132,8 +132,7 @@ export function nightStatus(now = new Date()) {
     badge,
     isHappening,
     isNextUp,
-    msUntilStart: Math.max(msUntilStart, 0),
-    key: `${night.slug}|${badge}|${Math.ceil(Math.max(msUntilStart, 0) / 60000)}`,
+    key: `${night.slug}|${badge}`,
   };
 }
 
@@ -147,4 +146,20 @@ export function nextOccurrence(night: Night, from = new Date()) {
 // The morning after a YYYY-MM-DD date, when that night ends.
 export function nextDay(date: string) {
   return new Date(new Date(`${date}T00:00:00Z`).getTime() + DAY_MS).toISOString().slice(0, 10);
+}
+
+// The lines that take turns on a card while a night is live. Edit the wording here.
+export function vibeLines(night: Night) {
+  return [
+    "The party is on 🔥",
+    "Hosted by African Simba aka The Game Changer",
+    "The vibe is right, the music is loud 🎶",
+    `Pull up to ${night.venue}, ${night.area}`,
+    "Book your table now",
+  ];
+}
+
+export function directionsUrl(night: Night) {
+  const place = `${night.venue}, ${nightLocation(night)}, Uganda`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`;
 }

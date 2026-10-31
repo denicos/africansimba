@@ -2,9 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FiChevronRight, FiClock, FiMapPin } from "react-icons/fi";
-import { NIGHTS, NIGHT_HOURS, VENUES, nightLocation } from "../data/nights";
+import { FiChevronRight, FiMapPin } from "react-icons/fi";
+
+import Button from "./Button";
+import LiveBadge from "./LiveBadge";
+import VibeLine from "./VibeLine";
+import WhatsAppButton from "./WhatsAppButton";
+import { NIGHTS, VENUES, directionsUrl, nightLocation } from "../data/nights";
 import useTonight from "../lib/useTonight";
+import { nightMessages } from "../lib/whatsapp";
 
 export default function WeekList() {
   const tonight = useTonight();
@@ -13,28 +19,36 @@ export default function WeekList() {
     <ul className="week-list">
       {NIGHTS.map((night) => {
         const isHighlighted = tonight?.night.slug === night.slug;
+        const isLive = isHighlighted && tonight.isHappening;
         const emblem = VENUES[night.venue].emblem;
+        const classes = ["week-card", isHighlighted && "is-highlighted", isLive && "is-live"].filter(Boolean).join(" ");
         return (
           <li key={night.slug}>
-            <Link href={`/nights/${night.slug}`} className={isHighlighted ? "week-card is-highlighted" : "week-card"}>
+            <div className={classes}>
               <span className="week-day">{night.weekday}</span>
               <span className="week-info">
-                <span className="week-name">{night.name}</span>
+                <Link href={`/nights/${night.slug}`} className="week-name week-card-link">
+                  {night.name}
+                </Link>
                 <span className="week-venue">
                   <FiMapPin aria-hidden="true" /> {night.venue}, {nightLocation(night)}
                 </span>
-                <span className="week-venue">
-                  <FiClock aria-hidden="true" /> {NIGHT_HOURS.label}
-                </span>
+                {isLive && <VibeLine night={night} className="vibe-line week-vibe" />}
               </span>
               {emblem && <Image src={emblem} alt="" width={32} height={32} loading="lazy" className="venue-emblem" />}
-              {isHighlighted && (
-                <span key={tonight.badge} className="week-badge is-fading">
-                  {tonight.badge}
-                </span>
+              {isHighlighted && <LiveBadge tonight={tonight} />}
+              {isLive && (
+                <div className="week-actions">
+                  <WhatsAppButton action="book_table" item={night.name} message={nightMessages.vip(night)} size="small">
+                    Reserve VIP Table
+                  </WhatsAppButton>
+                  <Button href={directionsUrl(night)} external variant="outline" size="small">
+                    Get Directions
+                  </Button>
+                </div>
               )}
               <FiChevronRight className="week-arrow" aria-hidden="true" />
-            </Link>
+            </div>
           </li>
         );
       })}

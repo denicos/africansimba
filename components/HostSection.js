@@ -2,13 +2,10 @@ import { FaInstagram } from "react-icons/fa6";
 
 import Button from "./Button";
 import CoverFlow from "./CoverFlow";
-import { VENUES } from "../data/nights";
 import { HOST, HOST_FULL_NAME } from "../data/site";
-import { venueLogo } from "../lib/photos";
+import { venueLogos } from "../lib/photos";
 
 export default function HostSection() {
-  const venueLogos = Object.fromEntries(Object.keys(VENUES).map((venue) => [venue, venueLogo(venue)]));
-
   return (
     <section className="section host-section" aria-labelledby="host-heading">
       <div className="container">
@@ -25,7 +22,7 @@ export default function HostSection() {
             </Button>
           )}
         </div>
-        <CoverFlow venueLogos={venueLogos} />
+        <CoverFlow venueLogos={venueLogos()} />
       </div>
     </section>
   );

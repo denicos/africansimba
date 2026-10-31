@@ -8,8 +8,8 @@ import useTonight from "../lib/useTonight";
 
 const MAX_TILT = 8;
 const DRAG_THRESHOLD = 6;
-const MARQUEE_QUERY = "(max-width: 899px) and (prefers-reduced-motion: no-preference)";
-const TILT_QUERY = "(min-width: 900px) and (hover: hover) and (prefers-reduced-motion: no-preference)";
+const MARQUEE_QUERY = "(max-width: 1099px) and (prefers-reduced-motion: no-preference)";
+const TILT_QUERY = "(min-width: 1100px) and (hover: hover) and (prefers-reduced-motion: no-preference)";
 
 function shineOrder(partner) {
   return PARTNERS.filter((item) => !item.featured).indexOf(partner);

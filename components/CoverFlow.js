@@ -6,9 +6,11 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import Button from "./Button";
 import Lightbox from "./Lightbox";
+import LiveBadge from "./LiveBadge";
+import VibeLine from "./VibeLine";
 import WhatsAppButton from "./WhatsAppButton";
-import { NIGHTS, NIGHT_HOURS, nightLocation } from "../data/nights";
-import { HOST_FULL_NAME } from "../data/site";
+import { NIGHTS, VENUES, nightLocation } from "../data/nights";
+import { HOST_FULL_NAME, MARTELL_LOGO } from "../data/site";
 import useTonight from "../lib/useTonight";
 import useRotation from "../lib/useRotation";
 import { nightMessages } from "../lib/whatsapp";
@@ -17,6 +19,7 @@ const COUNT = NIGHTS.length;
 const HALF = Math.floor(COUNT / 2);
 const SWIPE_START = 6;
 const SWIPE_DISTANCE = 40;
+const RETURN_TO_LIVE_MS = 8000;
 const HOLD_MS = 500;
 const POSTER_SIZES = "(max-width: 899px) 85vw, 400px";
 
@@ -27,22 +30,25 @@ const POSTERS = NIGHTS.map((night) => ({ src: night.poster.src, alt: posterAlt(n
 const offsetFrom = (index, active) => ((index - active + COUNT + HALF) % COUNT) - HALF;
 const poseName = (offset) => (offset === 0 ? "0" : `${offset < 0 ? "m" : "p"}${Math.abs(offset)}`);
 
-function DetailsPanel({ night, badge, venueLogo, isLive, actions }) {
+function DetailsPanel({ night, tonight, venueLogo, isLive, actions }) {
+  const isTonight = tonight?.night.slug === night.slug;
+  const logo = VENUES[night.venue].emblem || venueLogo;
+
   return (
     <div className="host-panel">
       <div aria-live={isLive ? "polite" : "off"}>
         <div key={night.slug}>
           <div className="host-panel-top host-step" style={{ "--step": 0 }}>
             <span className="host-panel-day">{night.weekday}</span>
-            {badge && <span className="week-badge">{badge}</span>}
+            {isTonight && <LiveBadge tonight={tonight} />}
           </div>
           <h3 className="host-panel-title host-step" style={{ "--step": 1 }}>
             {night.name}
           </h3>
           <div className="host-panel-venue host-step" style={{ "--step": 2 }}>
-            {venueLogo ? (
+            {logo ? (
               <span className="host-venue-logo">
-                <Image src={venueLogo} alt={`${night.venue} logo`} fill sizes="128px" loading="lazy" />
+                <Image src={logo} alt={`${night.venue} logo`} fill sizes="72px" loading="lazy" />
               </span>
             ) : (
               <span className="host-venue-badge">{night.venue}</span>
@@ -51,11 +57,18 @@ function DetailsPanel({ night, badge, venueLogo, isLive, actions }) {
               {night.venue}, {nightLocation(night)}
             </span>
           </div>
-          <p className="host-panel-meta host-step" style={{ "--step": 2 }}>
-            {NIGHT_HOURS.label} · Official Martell night
-            <br />
-            Hosted by {HOST_FULL_NAME}
-          </p>
+          {isTonight && tonight.isHappening && (
+            <div className="host-step" style={{ "--step": 2 }}>
+              <VibeLine night={night} className="vibe-line host-panel-vibe" />
+            </div>
+          )}
+          <div className="host-panel-meta host-step" style={{ "--step": 2 }}>
+            <p>Hosted by {HOST_FULL_NAME}</p>
+            <p className="host-panel-martell">
+              <Image src={MARTELL_LOGO.src} alt="" width={MARTELL_LOGO.width} height={MARTELL_LOGO.height} sizes="40px" quality={90} loading="lazy" />
+              In partnership with Martell
+            </p>
+          </div>
         </div>
       </div>
       {/* Kept in place when the night changes, so keyboard focus is never lost. Its fade-in is started in CoverFlow. */}
@@ -88,11 +101,13 @@ export default function CoverFlow({ venueLogos }) {
   const tonight = useTonight();
   const [isSettled, setIsSettled] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lastLook, setLastLook] = useState(0);
 
   const night = NIGHTS[active];
 
-  // Starts on tonight's night, and turns to the new night at 6 AM if the page is left open.
+  // Starts on tonight's night, and turns to it by itself at 6 PM and 6 AM if the page is left open.
   const tonightIndex = NIGHTS.findIndex((item) => item.slug === tonight?.night.slug);
+  const isLiveNight = Boolean(tonight?.isHappening);
   useEffect(() => {
     if (tonightIndex < 0) return;
     if (start === null) {
@@ -103,7 +118,15 @@ export default function CoverFlow({ venueLogos }) {
     }
     goTo(tonightIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tonightIndex]);
+  }, [tonightIndex, isLiveNight]);
+
+  // While a night is live its poster stays in front. Visitors can look at the others, then it comes back.
+  useEffect(() => {
+    if (!isLiveNight || active === tonightIndex || paused || isLightboxOpen) return;
+    const timer = setTimeout(() => goTo(tonightIndex), RETURN_TO_LIVE_MS);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLiveNight, active, tonightIndex, paused, isLightboxOpen, lastLook]);
 
   useEffect(() => setPause("lightbox", isLightboxOpen), [isLightboxOpen, setPause]);
 
@@ -144,6 +167,12 @@ export default function CoverFlow({ venueLogos }) {
     setActive(index);
   };
 
+  // A visitor choosing a night, which restarts the wait before a live night's poster comes back.
+  const lookAt = (next) => {
+    setLastLook(Date.now());
+    goTo(next);
+  };
+
   const handleRowScroll = () => {
     clearTimeout(scrollTimer.current);
     scrollTimer.current = setTimeout(() => {
@@ -155,13 +184,14 @@ export default function CoverFlow({ venueLogos }) {
       const nearest = items.indexOf(items.reduce((best, item) => (distance(item) < distance(best) ? item : best)));
       scrolledTo.current = nearest;
       setActive(nearest);
+      setLastLook(Date.now());
     }, 120);
   };
 
   const handleKeyDown = (event) => {
     if (isLightboxOpen) return;
-    if (event.key === "ArrowRight") goTo(active + 1);
-    if (event.key === "ArrowLeft") goTo(active - 1);
+    if (event.key === "ArrowRight") lookAt(active + 1);
+    if (event.key === "ArrowLeft") lookAt(active - 1);
   };
 
   const handlePointerDown = (event) => {
@@ -182,7 +212,7 @@ export default function CoverFlow({ venueLogos }) {
     // Holding a poster only pauses the rotation, so letting go shouldn't open it.
     if (event.timeStamp - swipe.current.startTime > HOLD_MS) wasSwiped.current = true;
     swipe.current = null;
-    if (Math.abs(distance) >= SWIPE_DISTANCE) goTo(active + (distance < 0 ? 1 : -1));
+    if (Math.abs(distance) >= SWIPE_DISTANCE) lookAt(active + (distance < 0 ? 1 : -1));
   };
 
   const handleClickCapture = (event) => {
@@ -194,21 +224,20 @@ export default function CoverFlow({ venueLogos }) {
 
   const posterClick = (index) => {
     if (index === active) setIsLightboxOpen(true);
-    else goTo(index);
+    else lookAt(index);
   };
 
-  const badge = tonight?.night.slug === night.slug ? tonight.badge : null;
   const panel = (
     <DetailsPanel
       night={night}
-      badge={badge}
+      tonight={tonight}
       venueLogo={venueLogos[night.venue]}
       isLive={isSettled && (paused || reducedMotion)}
       actions={actions}
     />
   );
   const lightbox = isLightboxOpen && (
-    <Lightbox photos={POSTERS} index={active} onChange={goTo} onClose={() => setIsLightboxOpen(false)} />
+    <Lightbox photos={POSTERS} index={active} onChange={lookAt} onClose={() => setIsLightboxOpen(false)} />
   );
 
   if (reducedMotion) {
@@ -301,11 +330,15 @@ export default function CoverFlow({ venueLogos }) {
         </div>
 
         <div className="cf-controls">
-          <div className="cf-progress">
-            <span key={active} onAnimationEnd={() => goTo(active + 1)} />
-          </div>
+          {isLiveNight ? (
+            <p className="cf-live-label">Live now</p>
+          ) : (
+            <div className="cf-progress">
+              <span key={active} onAnimationEnd={() => goTo(active + 1)} />
+            </div>
+          )}
           <div className="cf-buttons">
-            <button type="button" className="cf-arrow" onClick={() => goTo(active - 1)} aria-label="Previous night">
+            <button type="button" className="cf-arrow" onClick={() => lookAt(active - 1)} aria-label="Previous night">
               <FiChevronLeft aria-hidden="true" />
             </button>
             {NIGHTS.map((item, index) => (
@@ -316,12 +349,12 @@ export default function CoverFlow({ venueLogos }) {
                 data-label={item.weekday.slice(0, 3).toUpperCase()}
                 aria-label={`Show ${item.name}, ${item.weekday}`}
                 aria-current={index === active || undefined}
-                onClick={() => goTo(index)}
+                onClick={() => lookAt(index)}
               >
                 <span />
               </button>
             ))}
-            <button type="button" className="cf-arrow" onClick={() => goTo(active + 1)} aria-label="Next night">
+            <button type="button" className="cf-arrow" onClick={() => lookAt(active + 1)} aria-label="Next night">
               <FiChevronRight aria-hidden="true" />
             </button>
           </div>

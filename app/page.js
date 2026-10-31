@@ -11,6 +11,7 @@ import WeekList from "../components/WeekList";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { SITE } from "../data/site";
 import { pageMetadata } from "../lib/metadata";
+import { venueLogos } from "../lib/photos";
 import { photos } from "./gallery/data";
 
 export const metadata = pageMetadata({
@@ -52,7 +53,7 @@ export default function HomePage() {
               </WhatsAppButton>
             </div>
           </div>
-          <TonightCard />
+          <TonightCard venueLogos={venueLogos()} />
         </div>
       </section>
 

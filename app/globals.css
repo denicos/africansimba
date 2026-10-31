@@ -561,14 +561,31 @@ h3 {
   border-radius: var(--radius-small);
 }
 
+/* The poster on show sits on top. The previous one stays under it, so a new one can fade in over it. */
 .tonight-card-poster img {
-  object-fit: contain;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+  object-fit: cover;
+  object-position: top;
 }
 
 .tonight-card-poster img.is-active {
-  opacity: 1;
+  z-index: 1;
+}
+
+.tonight-card-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 6px;
+  font-family: var(--font-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tonight-card-fallback img {
+  object-fit: contain;
+  padding: 8px;
 }
 
 .tonight-card-info {
@@ -607,9 +624,6 @@ h3 {
 }
 
 .tonight-card-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   color: var(--clr-primary-5);
   font-size: 0.8125rem;
   font-weight: 600;
@@ -624,8 +638,8 @@ h3 {
   width: 100%;
 }
 
-/* This card's Book a Table button only: green "Book a Table" and white phone number take turns. Both sit in the
-   same grid cell, so the size never changes. With reduced motion, it stays green with the number underneath. */
+/* This card's Book a Table button only: green "Book a Table" and white phone number take turns, one at a time.
+   With reduced motion, it stays green with the number underneath. */
 .btn-alternating {
   position: relative;
   display: inline-grid;
@@ -650,14 +664,10 @@ h3 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-}
-
-.btn-alternating-book {
   color: #fff;
 }
 
 .btn-alternating-number {
-  color: #fff;
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -680,9 +690,16 @@ h3 {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .btn-alternating {
+    display: block;
+    height: 44px;
+    padding: 0;
+  }
+
   .btn-alternating-book,
   .btn-alternating-number {
-    grid-area: 1 / 1;
+    position: absolute;
+    inset: 0;
   }
 
   .btn-alternating-number {
@@ -690,27 +707,26 @@ h3 {
     font-size: inherit;
     font-weight: inherit;
     opacity: 0;
-    transform: translateY(100%);
   }
 
   .btn-alternating-number svg {
     display: inline;
   }
 
-  /* A 5 second loop: each state shows for 2.1 seconds, then 0.4 seconds to change. */
+  /* A 5 second loop. The old text leaves completely before the new text arrives, and the background
+     switches in 150ms between them, so two labels or a washed-out colour never show. */
   .btn-alternating::before {
-    animation: alternating-green 5s ease-in-out infinite;
+    animation: alternating-green 5s linear infinite;
   }
 
   .btn-alternating-book {
-    animation: alternating-book 5s ease-in-out infinite;
+    animation: alternating-book 5s linear infinite;
   }
 
   .btn-alternating-number {
-    animation: alternating-number 5s ease-in-out infinite;
+    animation: alternating-number 5s linear infinite;
   }
 
-  /* Hover, touch or keyboard focus: stop on green "Book a Table". */
   .btn-alternating.is-held::before,
   .btn-alternating.is-held .btn-alternating-book,
   .btn-alternating.is-held .btn-alternating-number,
@@ -731,48 +747,53 @@ h3 {
 
 @keyframes alternating-green {
   0%,
-  42%,
+  44%,
+  97%,
   100% {
     opacity: 1;
   }
-  50%,
-  92% {
+  47%,
+  94% {
     opacity: 0;
   }
 }
 
 @keyframes alternating-book {
   0%,
-  42%,
-  100% {
+  42% {
     opacity: 1;
     transform: translateY(0);
   }
-  50% {
+  46% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateY(-60%);
   }
-  50.01%,
-  92% {
+  46.01%,
+  96% {
     opacity: 0;
-    transform: translateY(100%);
+    transform: translateY(60%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @keyframes alternating-number {
   0%,
-  42% {
+  46% {
     opacity: 0;
-    transform: translateY(100%);
+    transform: translateY(60%);
   }
   50%,
   92% {
     opacity: 1;
     transform: translateY(0);
   }
+  96%,
   100% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateY(-60%);
   }
 }
 
@@ -858,6 +879,64 @@ h3 {
 
 .week-card > * {
   position: relative;
+}
+
+/* The night's name is the row's link and covers the whole row. The badge and buttons sit above it. */
+.week-card > .week-info {
+  position: static;
+}
+
+.week-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.week-card-link:focus-visible {
+  outline: none;
+}
+
+.week-card-link:focus-visible::after {
+  outline: 2px solid var(--clr-primary-3);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+.week-card .live-badge,
+.week-actions {
+  z-index: 2;
+}
+
+.week-card.is-highlighted .week-day {
+  flex: 1 1 0;
+  order: -2;
+}
+
+.week-card.is-highlighted .week-badge,
+.week-card.is-highlighted .live-badge {
+  order: -1;
+}
+
+.week-card.is-highlighted .week-info {
+  flex-basis: calc(100% - 88px);
+}
+
+.week-actions {
+  position: relative;
+  display: grid;
+  flex: 0 0 100%;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.week-vibe {
+  margin-top: 4px;
+}
+
+.week-card.is-live .week-arrow {
+  display: none;
 }
 
 .week-card.is-highlighted {
@@ -1773,8 +1852,7 @@ button.photo-tile:hover img {
 .host-panel-venue {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 64px;
+  gap: 10px;
   margin-top: 12px;
   font-weight: 500;
 }
@@ -1782,13 +1860,53 @@ button.photo-tile:hover img {
 .host-venue-logo {
   position: relative;
   flex-shrink: 0;
-  width: 64px;
-  height: 64px;
+  width: 36px;
+  height: 36px;
 }
 
 .host-venue-logo img {
   object-fit: contain;
-  mix-blend-mode: lighten;
+  object-position: left center;
+  border-radius: 50%;
+}
+
+.host-panel-vibe {
+  margin-top: 10px;
+  font-size: var(--text-small);
+  min-height: 1.3em;
+}
+
+.host-panel-martell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.75rem;
+}
+
+.host-panel-martell img {
+  width: 40px;
+  height: auto;
+  border-radius: 3px;
+}
+
+.cf-live-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--clr-primary-3);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.cf-live-label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
 }
 
 .host-venue-badge {
@@ -1839,6 +1957,237 @@ button.photo-tile:hover img {
   object-fit: contain;
 }
 
+/* The rotating line on a live night */
+.vibe-line {
+  display: block;
+  min-height: 2.6em;
+  overflow: hidden;
+  color: var(--clr-primary-5);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.vibe-line > span {
+  display: block;
+}
+
+/* The one badge for tonight's night. Calm before it starts, alive and clickable while it's on. */
+.live-badge {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: 999px;
+  transition: transform 0.2s ease;
+}
+
+.live-badge-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--clr-primary-3);
+  border-radius: 999px;
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.live-badge-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  box-shadow: 0 0 18px rgba(239, 178, 9, 0.4);
+  opacity: 0;
+}
+
+.live-badge-dot {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+}
+
+.live-badge-dot i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.live-badge-ping {
+  display: none;
+  background: #34d399;
+  opacity: 0.75;
+}
+
+.live-badge-core {
+  background: #10b981;
+}
+
+.live-badge-text {
+  display: inline-grid;
+  justify-items: center;
+}
+
+.live-badge-text > span {
+  grid-area: 1 / 1;
+}
+
+.live-badge-text-live,
+.live-badge-text-join {
+  opacity: 0;
+}
+
+.live-badge-eq {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+}
+
+.live-badge-eq i {
+  width: 2px;
+  height: 100%;
+  background: #000;
+  transform-origin: bottom;
+}
+
+@media (hover: hover) {
+  .live-badge:hover {
+    transform: scale(1.05);
+  }
+
+  .live-badge:hover .live-badge-text-now,
+  .live-badge:hover .live-badge-text-live {
+    animation: none;
+    opacity: 0;
+  }
+
+  .live-badge:hover .live-badge-text-join {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .live-badge-pill {
+    animation: live-bounce 2.5s ease-out infinite;
+  }
+
+  .live-badge-pill::before {
+    animation: live-glow 1s ease-in-out infinite alternate;
+  }
+
+  .live-badge-ping {
+    display: block;
+    animation: live-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .live-badge-text-now {
+    animation: live-text-now 6s ease infinite;
+  }
+
+  .live-badge-text-live {
+    animation: live-text-live 6s ease infinite;
+  }
+
+  .live-badge-eq {
+    display: inline-flex;
+  }
+
+  .live-badge-eq i:nth-child(1) {
+    animation: live-eq 0.4s ease-in-out infinite alternate;
+  }
+
+  .live-badge-eq i:nth-child(2) {
+    animation: live-eq 0.55s ease-in-out infinite alternate;
+  }
+
+  .live-badge-eq i:nth-child(3) {
+    animation: live-eq 0.45s ease-in-out infinite alternate;
+  }
+
+  .vibe-line > span {
+    animation: vibe-in 0.45s ease;
+  }
+}
+
+@keyframes live-bounce {
+  0%,
+  24%,
+  100% {
+    transform: none;
+  }
+  8% {
+    transform: translateY(-6px);
+  }
+  16% {
+    transform: scale(1.05, 0.95);
+  }
+}
+
+@keyframes live-glow {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes live-ping {
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+@keyframes live-eq {
+  from {
+    transform: scaleY(0.3);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes live-text-now {
+  0%,
+  46%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+  50%,
+  96% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes live-text-live {
+  0%,
+  46%,
+  100% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  50%,
+  96% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vibe-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 /* Partners. The row is a grid on desktop, and slides along on its own on smaller screens (is-marquee). */
 .partner-row {
   margin-inline: -16px;
@@ -1859,11 +2208,12 @@ button.photo-tile:hover img {
 
 .partner-set li {
   display: flex;
-  flex: 0 0 168px;
+  flex: 0 0 auto;
+  min-width: 168px;
 }
 
 .partner-set li.is-featured {
-  flex-basis: 248px;
+  min-width: 248px;
 }
 
 .partner-row.is-marquee {
@@ -2000,12 +2350,13 @@ button.photo-tile:hover img {
 .partner-label {
   position: relative;
   color: var(--clr-primary-3);
-  font-size: var(--text-label);
+  font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: var(--tracking-label);
+  letter-spacing: 0.08em;
   line-height: 1.4;
   text-align: center;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .partner-row.is-waiting .partner-card {
@@ -2572,8 +2923,28 @@ html[data-age-ok] .age-gate {
     gap: 16px;
   }
 
-  .week-day {
-    flex-basis: 96px;
+  .week-day,
+  .week-card.is-highlighted .week-day {
+    flex: 0 0 96px;
+    order: 0;
+  }
+
+  .week-card.is-highlighted .week-badge,
+  .week-card.is-highlighted .live-badge {
+    order: 0;
+  }
+
+  .week-card.is-highlighted .week-info {
+    flex-basis: 0;
+  }
+
+  .week-card.is-live {
+    flex-wrap: wrap;
+  }
+
+  .week-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    order: 1;
   }
 }
 
@@ -2626,20 +2997,19 @@ html[data-age-ok] .age-gate {
     gap: 48px;
   }
 
-  .partner-row:not(.is-marquee) {
-    margin-inline: 0;
-    padding-inline: 0;
-    overflow: visible;
+  .week-card.is-live {
+    flex-wrap: nowrap;
   }
 
-  .partner-row:not(.is-marquee) .partner-track {
-    width: 100%;
+  .week-card.is-live .week-arrow {
+    display: block;
   }
 
-  .partner-row:not(.is-marquee) .partner-set {
-    display: grid;
-    grid-template-columns: 1.5fr repeat(4, 1fr);
-    width: 100%;
+  .week-actions {
+    display: flex;
+    flex: 0 0 auto;
+    margin-top: 0;
+    order: 0;
   }
 
   .host-layout {
@@ -2687,6 +3057,29 @@ html[data-age-ok] .age-gate {
 
   .footer-grid {
     grid-template-columns: 1.4fr 1.2fr 1fr 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .partner-row:not(.is-marquee) {
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+
+  .partner-row:not(.is-marquee) .partner-track {
+    width: 100%;
+  }
+
+  .partner-row:not(.is-marquee) .partner-set {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .partner-row:not(.is-marquee) .partner-set li,
+  .partner-row:not(.is-marquee) .partner-set li.is-featured {
+    min-width: 0;
   }
 }
 
