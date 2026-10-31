@@ -1443,57 +1443,127 @@ button.photo-tile:hover img {
   object-fit: contain;
 }
 
-/* Partners */
-.partner-martell {
+/* Partners. The row is a grid on desktop, and slides along on its own on smaller screens (is-marquee). */
+.partner-row {
+  margin-inline: -16px;
+  padding: 4px 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.partner-track {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  margin-bottom: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-gold);
-  border-radius: var(--radius);
+  width: max-content;
 }
 
-.partner-martell-title {
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
-  line-height: 1.25;
-  margin-bottom: 8px;
-}
-
-.partner-martell p:last-child {
-  color: var(--text-muted);
-}
-
-.partner-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.partner-set {
+  display: flex;
   gap: 12px;
 }
 
-.partner-card {
+.partner-set li {
   display: flex;
+  flex: 0 0 168px;
+}
+
+.partner-set li.is-featured {
+  flex-basis: 248px;
+}
+
+.partner-row.is-marquee {
+  padding-inline: 0;
+  overflow-x: clip;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.partner-row.is-marquee .partner-track {
+  animation: partner-marquee 40s linear infinite;
+}
+
+.partner-row.is-marquee .partner-set {
+  padding-right: 12px;
+}
+
+.partner-card {
+  position: relative;
+  display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 160px;
   padding: 16px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  transition: border-color 0.2s ease;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-a.partner-card:hover {
+.partner-card.is-featured {
   border-color: var(--border-gold);
 }
 
+.partner-card.is-tilting {
+  transition: transform 0.12s linear;
+}
+
+.partner-card:active {
+  transform: scale(0.97);
+  transition-duration: 0.12s;
+}
+
+/* The gold border that lights up, as its own layer so only its opacity changes */
+.partner-flash,
+.partner-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--clr-primary-3);
+  border-radius: var(--radius);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.partner-card::before {
+  transition: opacity 0.25s ease;
+}
+
+.partner-shine {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+
+.partner-shine span {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(246, 205, 94, 0.28), transparent);
+  transform: translateX(-160%) skewX(-20deg);
+}
+
 .partner-logo {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 88px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.partner-float {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .partner-logo img {
@@ -1503,22 +1573,18 @@ a.partner-card:hover {
   max-height: 72px;
 }
 
-/* For logos with a black background: the black disappears into the dark card. */
-.logo-on-black {
-  mix-blend-mode: lighten;
+.partner-card.is-featured .partner-logo img {
+  max-height: 88px;
+  border-radius: var(--radius-small);
 }
 
-@media (hover: hover) {
-  .partner-logo > * {
-    opacity: 0.72;
-    filter: grayscale(0.5);
-    transition: opacity 0.25s ease, filter 0.25s ease;
-  }
-
-  .partner-card:hover .partner-logo > * {
-    opacity: 1;
-    filter: none;
-  }
+/* The soft gold glow behind the logo on the way in */
+.partner-glow {
+  position: absolute;
+  inset: -16px;
+  background: radial-gradient(circle, rgba(239, 178, 9, 0.45), transparent 68%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .partner-wordmark {
@@ -1529,11 +1595,152 @@ a.partner-card:hover {
 }
 
 .partner-label {
+  position: relative;
   color: var(--clr-primary-3);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   font-weight: 600;
   letter-spacing: var(--tracking-label);
+  line-height: 1.4;
+  text-align: center;
   text-transform: uppercase;
+}
+
+.partner-row.is-waiting .partner-card {
+  opacity: 0;
+}
+
+/* Motion is left out entirely for reduced motion, except the fade-in below. */
+.partner-row.is-entering .partner-card {
+  animation: partner-fade 0.7s ease backwards;
+  animation-delay: calc(var(--i) * 120ms);
+}
+
+.partner-row.is-paused,
+.partner-row.is-paused * {
+  animation-play-state: paused !important;
+}
+
+@media (hover: hover) {
+  .partner-card:hover::before {
+    opacity: 1;
+  }
+
+  .partner-float > *,
+  .partner-label {
+    transition: opacity 0.25s ease;
+  }
+
+  .partner-float > * {
+    opacity: 0.72;
+  }
+
+  .partner-label {
+    opacity: 0.8;
+  }
+
+  .partner-card.is-featured .partner-float > *,
+  .partner-card:hover .partner-float > *,
+  .partner-card:hover .partner-label {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .partner-row.is-entering .partner-card {
+    animation-name: partner-rise;
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .partner-row.is-entering .partner-logo {
+    animation: partner-logo-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: calc(var(--i) * 120ms);
+  }
+
+  .partner-row.is-entering .partner-glow {
+    animation: partner-glow 1.4s ease;
+    animation-delay: calc(var(--i) * 120ms);
+  }
+
+  /* Each logo starts at a different point in its 5.5 second loop, so they move like a wave. */
+  .partner-float {
+    animation: partner-float 2.75s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -1.1s);
+  }
+
+  /* One card gets the shine every 4 seconds: a 16 second loop, each card starting 4 seconds after the last. */
+  .partner-shine span {
+    animation: partner-shine 16s linear infinite backwards;
+    animation-delay: calc(var(--shine) * 4s + 1s);
+  }
+
+  .partner-flash {
+    animation: partner-flash 16s linear infinite backwards;
+    animation-delay: calc(var(--shine) * 4s + 1s);
+  }
+
+  @media (hover: hover) {
+    .partner-row:not(.is-marquee) .partner-card:hover .partner-logo {
+      transform: translateZ(36px);
+    }
+  }
+}
+
+@keyframes partner-marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes partner-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes partner-rise {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+@keyframes partner-logo-in {
+  from {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes partner-glow {
+  30% {
+    opacity: 1;
+  }
+}
+
+@keyframes partner-float {
+  to {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes partner-shine {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+  }
+  10%,
+  100% {
+    transform: translateX(460%) skewX(-20deg);
+  }
+}
+
+@keyframes partner-flash {
+  0%,
+  12%,
+  100% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
 }
 
 /* Split section */
@@ -1920,22 +2127,6 @@ html[data-age-ok] .age-gate {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .partner-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .partner-martell {
-    flex-direction: row;
-    align-items: center;
-    gap: 32px;
-    padding: 32px;
-  }
-
-  .partner-martell .martell-logo {
-    flex-shrink: 0;
-    width: 272px;
-  }
-
   .martell-banner {
     flex-direction: row;
     align-items: center;
@@ -2020,6 +2211,22 @@ html[data-age-ok] .age-gate {
   .split {
     grid-template-columns: 1fr 1fr;
     gap: 48px;
+  }
+
+  .partner-row:not(.is-marquee) {
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+
+  .partner-row:not(.is-marquee) .partner-track {
+    width: 100%;
+  }
+
+  .partner-row:not(.is-marquee) .partner-set {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    width: 100%;
   }
 
   .host-layout {

@@ -46,10 +46,12 @@ export const MARTELL_LOGO = {
 };
 
 // Partners section, in display order. Leave logo empty to show the name as text.
+// featured makes the card wider with a gold border. The others take turns getting the gold shine, in this order.
 export const PARTNERS = [
-  { name: "Thrones", label: "Bugolobi", logo: "/images/partners/thrones-logo.webp", logoWidth: 400, logoHeight: 400 },
-  { name: "Vanquish", label: "Kampala", logo: "/images/partners/vanquish-logo-full.webp", logoWidth: 460, logoHeight: 440, logoOnBlack: true },
-  { name: "Nomad", label: "Ggaba Road", logo: "" }, // TODO: Nomad logo
+  { name: "Martell", label: "Official Brand Ambassador", logo: MARTELL_LOGO.src, logoWidth: MARTELL_LOGO.width, logoHeight: MARTELL_LOGO.height, href: "/drinks", featured: true },
+  { name: "Thrones", label: "Bugolobi", logo: "/images/partners/thrones-logo.webp", logoWidth: 400, logoHeight: 400, href: "/nights/bandali-mondays" },
+  { name: "Vanquish", label: "Kampala", logo: "/images/partners/vanquish-logo-full.webp", logoWidth: 460, logoHeight: 440, href: "/nights/illicit-saturday" },
+  { name: "Nomad", label: "Ggaba Road", logo: "", href: "/nights/swift-fridays" }, // TODO: Nomad logo
   { name: "Magnum", label: "Our store", logo: "/images/partners/magnum-logo.webp", logoWidth: 315, logoHeight: 89, href: "/magnum" },
 ];
 

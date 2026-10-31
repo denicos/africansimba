@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 const TARGETS =
-  ".section h2, .section .eyebrow, .week-card, .bottle-card, .partner-card, .partner-martell, .card, .night-details li, .video-card";
+  ".section h2, .section .eyebrow, .week-card, .bottle-card, .card, .night-details li, .video-card";
 const SKIP = ".reveal-list > *, .card h2, .prose h2";
 const STAGGER_MS = 80;
 const MAX_STAGGER_MS = 320;
