@@ -61,7 +61,7 @@ export default function NavBar() {
             action="book_table"
             item="General"
             message="Hi African Simba, I want to book a table."
-            className="btn btn-gold btn-small"
+            size="small"
             icon={false}
           >
             Book a Table

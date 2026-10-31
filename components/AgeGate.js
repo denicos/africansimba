@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Link from "next/link";
+import Button from "./Button";
 
 const STORAGE_KEY = "ase-age-confirmed";
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -61,20 +61,18 @@ export default function AgeGate() {
               <h2 id="age-gate-title">Are you 18 or older?</h2>
               <p>You must be of legal drinking age to view this page. Please enjoy responsibly.</p>
               <div className="button-row">
-                <button
+                <Button
                   ref={yesButton}
-                  type="button"
-                  className="btn btn-gold"
                   onClick={() => {
                     rememberConfirmed();
                     setStatus("confirmed");
                   }}
                 >
                   Yes, I am 18+
-                </button>
-                <button type="button" className="btn btn-outline" onClick={() => setStatus("declined")}>
+                </Button>
+                <Button variant="outline" onClick={() => setStatus("declined")}>
                   No
-                </button>
+                </Button>
               </div>
             </>
           ) : (
@@ -82,12 +80,12 @@ export default function AgeGate() {
               <h2 id="age-gate-title">Sorry, this page is for adults only</h2>
               <p>Our drinks are not for sale to persons under 18.</p>
               <div className="button-row">
-                <Link href="/" className="btn btn-gold">
+                <Button href="/">
                   Back to home
-                </Link>
-                <button type="button" className="btn btn-outline" onClick={() => setStatus("asking")}>
+                </Button>
+                <Button variant="outline" onClick={() => setStatus("asking")}>
                   I am 18+
-                </button>
+                </Button>
               </div>
             </>
           )}

@@ -16,11 +16,11 @@ import {
     Icon,
     Flex,
     Heading,
-    Button,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FiExternalLink, FiBriefcase, FiStar, FiAward } from "react-icons/fi";
+import SiteButton from "../../../components/Button";
 
 const MotionBox = motion.create(Box);
 
@@ -424,34 +424,8 @@ const ProfileModal = React.memo(({ isOpen, onClose, selectedMember }) => {
                                 Connect
                             </Text>
                             <HStack spacing={3}>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    borderColor="rgba(255,255,255,0.1)"
-                                    color="rgba(255,255,255,0.7)"
-                                    borderRadius="xl"
-                                    _hover={{
-                                        bg: "rgba(255,255,255,0.05)",
-                                        borderColor: "rgba(255,255,255,0.2)",
-                                        color: "white",
-                                    }}
-                                >
-                                    {selectedMember.social?.instagram || '@username'}
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    borderColor="rgba(255,255,255,0.1)"
-                                    color="rgba(255,255,255,0.7)"
-                                    borderRadius="xl"
-                                    _hover={{
-                                        bg: "rgba(255,255,255,0.05)",
-                                        borderColor: "rgba(255,255,255,0.2)",
-                                        color: "white",
-                                    }}
-                                >
-                                    {selectedMember.social?.twitter || '@username'}
-                                </Button>
+                                <SiteButton variant="outline" size="small">{selectedMember.social?.instagram || '@username'}</SiteButton>
+                                <SiteButton variant="outline" size="small">{selectedMember.social?.twitter || '@username'}</SiteButton>
                             </HStack>
                         </Box>
                     </Box>

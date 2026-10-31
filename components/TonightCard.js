@@ -103,7 +103,7 @@ export default function TonightCard() {
         </span>
       </div>
       <div className="tonight-card-action">
-        <WhatsAppButton action="book_table" item={night.name} message={nightMessages.book(night)} className="btn btn-whatsapp btn-small">
+        <WhatsAppButton action="book_table" item={night.name} message={nightMessages.book(night)} size="small">
           Book a Table
         </WhatsAppButton>
       </div>

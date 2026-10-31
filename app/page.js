@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 
+import Button from "../components/Button";
 import HeroVideo from "../components/HeroVideo";
 import HostSection from "../components/HostSection";
 import MartellShowcase from "../components/MartellShowcase";
@@ -44,9 +44,9 @@ export default function HomePage() {
               one.
             </p>
             <div className="button-row">
-              <a href="#this-week" className="btn btn-gold">
+              <Button href="#this-week">
                 See this week
-              </a>
+              </Button>
               <WhatsAppButton action="book_table" item="Homepage hero" message="Hi African Simba, I want to book a table.">
                 Book a Table
               </WhatsAppButton>
@@ -73,12 +73,12 @@ export default function HomePage() {
             <h2 id="drinks-heading">Martell and premium bottles, one message away</h2>
             <p className="lead">Order Martell, Don Julio, Clase Azul and more in Kampala on WhatsApp.</p>
             <div className="button-row">
-              <Link href="/drinks" className="btn btn-gold">
+              <Button href="/drinks">
                 View drinks
-              </Link>
-              <Link href="/magnum" className="btn btn-outline">
+              </Button>
+              <Button href="/magnum" variant="outline">
                 Visit Magnum, our wine store
-              </Link>
+              </Button>
             </div>
           </div>
           <MartellShowcase />
@@ -95,9 +95,9 @@ export default function HomePage() {
         <PhotoStrip photos={photos} />
         <div className="container">
           <div className="button-row">
-            <Link href="/gallery" className="btn btn-outline">
+            <Button href="/gallery" variant="outline">
               See the full gallery
-            </Link>
+            </Button>
           </div>
         </div>
       </section>

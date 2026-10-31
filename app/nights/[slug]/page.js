@@ -133,7 +133,6 @@ export default function NightPage({ params }) {
               action="reserve_bottle"
               item={night.name}
               message={nightMessages.reserve(night)}
-              className="btn btn-outline"
             >
               Reserve a Martell Bottle
             </WhatsAppButton>

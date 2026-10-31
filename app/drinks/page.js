@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 
+import Button from "../../components/Button";
 import AgeGate from "../../components/AgeGate";
 import PageHeader from "../../components/PageHeader";
 import RevealList from "../../components/RevealList";
@@ -34,14 +34,14 @@ function BottleCard({ bottle, large }) {
         <h3>{bottle.name}</h3>
         <p>{bottle.description}</p>
         <div className="bottle-actions">
-          <WhatsAppButton action="order" item={bottle.name} message={bottleMessages.order(bottle.name)} className="btn btn-whatsapp btn-small">
+          <WhatsAppButton action="order" item={bottle.name} message={bottleMessages.order(bottle.name)} size="small">
             Order on WhatsApp
           </WhatsAppButton>
           <WhatsAppButton
             action="ask_price"
             item={bottle.name}
             message={bottleMessages.price(bottle.name)}
-            className="btn btn-outline btn-small"
+            variant="primary" size="small"
             icon={false}
           >
             Ask for Price
@@ -106,9 +106,9 @@ export default function DrinksPage() {
           <h2 id="wines-heading">Wines from our Magnum store</h2>
           <p className="lead">Looking for wine? Visit Magnum, our own wine store in Kololo, Kampala.</p>
           <div className="button-row button-row-center">
-            <Link href="/magnum" className="btn btn-gold">
+            <Button href="/magnum">
               Visit Magnum
-            </Link>
+            </Button>
           </div>
         </div>
       </section>

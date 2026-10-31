@@ -9,9 +9,9 @@ import useRotation from "../lib/useRotation";
 
 const TAG = "Official Brand Ambassador · Uganda";
 
-function OrderButton({ bottle, className, children = "Order on WhatsApp" }) {
+function OrderButton({ bottle, size, children = "Order on WhatsApp" }) {
   return (
-    <WhatsAppButton action="order" item={bottle.name} message={bottleMessages.order(bottle.name)} className={className}>
+    <WhatsAppButton action="order" item={bottle.name} message={bottleMessages.order(bottle.name)} size={size}>
       {children}
     </WhatsAppButton>
   );
@@ -52,7 +52,7 @@ export default function MartellShowcase() {
                 <Image src={`/images/drinks/${item.image}`} alt={item.alt} fill sizes="(max-width: 899px) 50vw, 280px" quality={70} loading="lazy" />
               </div>
               <p className="martell-name">{item.name}</p>
-              <OrderButton bottle={item} className="btn btn-whatsapp btn-small">
+              <OrderButton bottle={item} size="small">
                 Order
               </OrderButton>
             </li>

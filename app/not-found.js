@@ -1,5 +1,5 @@
-import Link from "next/link";
 
+import Button from "../components/Button";
 import PageHeader from "../components/PageHeader";
 
 export const metadata = {
@@ -11,12 +11,12 @@ export default function NotFound() {
   return (
     <PageHeader eyebrow="404" title="Page not found" lead="Sorry, we couldn't find the page you're looking for.">
       <div className="button-row">
-        <Link href="/" className="btn btn-gold">
+        <Button href="/">
           Go back home
-        </Link>
-        <Link href="/nights" className="btn btn-outline">
+        </Button>
+        <Button href="/nights" variant="outline">
           See our nights
-        </Link>
+        </Button>
       </div>
     </PageHeader>
   );

@@ -47,7 +47,7 @@ export default function MagnumPage() {
             action="ask_price"
             item="Magnum"
             message="Hi African Simba, what are the prices of the wines at Magnum?"
-            className="btn btn-outline"
+            variant="primary"
             icon={false}
           >
             Ask for Price

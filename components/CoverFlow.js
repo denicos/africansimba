@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
+import Button from "./Button";
 import Lightbox from "./Lightbox";
 import WhatsAppButton from "./WhatsAppButton";
 import { NIGHTS, NIGHT_HOURS, nightLocation } from "../data/nights";
@@ -63,9 +63,9 @@ function DetailsPanel({ night, badge, venueLogo, isLive, actions }) {
         <WhatsAppButton action="book_table" item={night.name} message={nightMessages.book(night)}>
           Book a Table
         </WhatsAppButton>
-        <Link href={`/nights/${night.slug}`} className="btn btn-outline">
+        <Button href={`/nights/${night.slug}`}>
           View night
-        </Link>
+        </Button>
       </div>
     </div>
   );

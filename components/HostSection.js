@@ -1,5 +1,6 @@
 import { FaInstagram } from "react-icons/fa6";
 
+import Button from "./Button";
 import CoverFlow from "./CoverFlow";
 import { VENUES } from "../data/nights";
 import { HOST, HOST_FULL_NAME } from "../data/site";
@@ -19,9 +20,9 @@ export default function HostSection() {
             {HOST.bio && <p className="lead">{HOST.bio}</p>}
           </div>
           {HOST.instagram && (
-            <a href={HOST.instagram} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
+            <Button href={HOST.instagram} external variant="outline">
               <FaInstagram aria-hidden="true" /> Follow on Instagram
-            </a>
+            </Button>
           )}
         </div>
         <CoverFlow venueLogos={venueLogos} />
