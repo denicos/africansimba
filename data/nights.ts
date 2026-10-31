@@ -10,6 +10,9 @@ export type Night = {
   startTime: string; // e.g. "21:00" (24-hour). Empty shows "to be confirmed".
   folder: string;
   tagline: string;
+  // The host poster. face is for the small "Hosted by" photo: where the face centre is, measured in
+  // poster widths from the top left, and how far to zoom in on it.
+  poster: { src: string; width: number; height: number; face: { x: number; y: number; zoom: number } };
 };
 
 export const VENUES: Record<string, { area: string; emblem?: string }> = {
@@ -28,6 +31,7 @@ export const NIGHTS: Night[] = [
     startTime: "", // TODO: start time
     folder: "bandali",
     tagline: "Start the week right, with Martell at Thrones.",
+    poster: { src: "/images/nights/bandali/bandali-mondays-host.png", width: 588, height: 783, face: { x: 0.57, y: 0.54, zoom: 1.75 } },
   },
   {
     slug: "wahala-wednesday",
@@ -38,6 +42,7 @@ export const NIGHTS: Night[] = [
     startTime: "", // TODO: start time
     folder: "wahala",
     tagline: "Midweek party madness at Thrones.",
+    poster: { src: "/images/nights/wahala/wahala-wednesday-host.png", width: 558, height: 738, face: { x: 0.55, y: 0.34, zoom: 2.6 } },
   },
   {
     slug: "swift-fridays",
@@ -48,6 +53,7 @@ export const NIGHTS: Night[] = [
     startTime: "", // TODO: start time
     folder: "swift",
     tagline: "Kick off the weekend at Nomad.",
+    poster: { src: "/images/nights/swift/swift-fridays-host.png", width: 574, height: 743, face: { x: 0.53, y: 0.285, zoom: 2.6 } },
   },
   {
     slug: "illicit-saturday",
@@ -58,6 +64,7 @@ export const NIGHTS: Night[] = [
     startTime: "", // TODO: start time
     folder: "illicit",
     tagline: "Saturday night, the way it should be, at Vanquish.",
+    poster: { src: "/images/nights/illicit/illicit-saturday-host.png", width: 610, height: 761, face: { x: 0.71, y: 0.52, zoom: 2.4 } },
   },
   {
     slug: "belle-vie-sunday",
@@ -68,6 +75,7 @@ export const NIGHTS: Night[] = [
     startTime: "", // TODO: start time
     folder: "belle-vie",
     tagline: "Close the week living the good life at Vanquish.",
+    poster: { src: "/images/nights/belle-vie/belle-vie-sunday-host.png", width: 547, height: 622, face: { x: 0.66, y: 0.44, zoom: 2.8 } },
   },
 ];
 

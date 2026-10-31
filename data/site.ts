@@ -47,17 +47,15 @@ export const MARTELL_LOGO = {
 
 // Partners section, in display order. Leave logo empty to show the name as text.
 export const PARTNERS = [
-  { name: "Thrones", label: "Bugolobi", logo: "/logos/thrones.webp", logoWidth: 400, logoHeight: 400 },
+  { name: "Thrones", label: "Bugolobi", logo: "/images/partners/thrones-logo.webp", logoWidth: 400, logoHeight: 400 },
   { name: "Vanquish", label: "Kampala", logo: "/images/partners/vanquish-logo-full.webp", logoWidth: 460, logoHeight: 440, logoOnBlack: true },
   { name: "Nomad", label: "Ggaba Road", logo: "" }, // TODO: Nomad logo
   { name: "Magnum", label: "Our store", logo: "/images/partners/magnum-logo.webp", logoWidth: 315, logoHeight: 89, href: "/magnum" },
 ];
 
-// Our resident host. Posters are found automatically: any file named *-host.png (or .jpg, .webp) in a
-// night's folder under public/images/nights/ shows after the next deploy.
+// Our resident host, shown in "Meet Your Host" and on the night pages. The posters are set in data/nights.ts.
 export const HOST = {
   name: "", // TODO: host name
-  bio: "", // TODO: short bio, 1 or 2 sentences
+  bio: "", // TODO: short bio, 1 or 2 sentences. Hidden until filled in.
   instagram: "", // TODO: Instagram URL. The "Follow on Instagram" button appears once this is filled in.
-  nights: ["wahala-wednesday", "swift-fridays", "illicit-saturday"], // Night slugs, from data/nights.ts
 };

@@ -9,7 +9,7 @@ import WhatsAppButton from "../../../components/WhatsAppButton";
 import { NIGHTS, VENUES, getNight, nextOccurrence, nightLocation } from "../../../data/nights";
 import { HOST, SITE } from "../../../data/site";
 import { OG_IMAGE, pageMetadata } from "../../../lib/metadata";
-import { hostPoster, listPhotos } from "../../../lib/photos";
+import { listPhotos } from "../../../lib/photos";
 import { nightMessages } from "../../../lib/whatsapp";
 
 export const dynamicParams = false;
@@ -63,6 +63,12 @@ function eventJsonLd(night) {
   };
 }
 
+// Zooms the poster in on the face, which sits at a different spot on each poster.
+function avatarStyle({ x, y, zoom }) {
+  const origin = (position) => ((zoom * position - 0.5) / (zoom - 1)) * 100;
+  return { transform: `scale(${zoom})`, transformOrigin: `${origin(x)}% ${origin(y)}%` };
+}
+
 export default function NightPage({ params }) {
   const night = getNight(params.slug);
   if (!night) notFound();
@@ -73,7 +79,6 @@ export default function NightPage({ params }) {
   );
 
   const emblem = VENUES[night.venue].emblem;
-  const poster = hostPoster(night);
 
   return (
     <>
@@ -111,14 +116,12 @@ export default function NightPage({ params }) {
             Official Martell night by African Simba Events, Martell brand ambassador in Uganda
           </p>
 
-          {poster && (
-            <p className="hosted-by">
-              <span className="hosted-by-avatar">
-                <Image src={poster} alt="" fill sizes="128px" quality={70} />
-              </span>
-              Hosted by {HOST.name || "our resident host"}
-            </p>
-          )}
+          <p className="hosted-by">
+            <span className="hosted-by-avatar">
+              <Image src={night.poster.src} alt="" fill sizes="128px" quality={70} style={avatarStyle(night.poster.face)} />
+            </span>
+            Hosted by {HOST.name || "our resident host"}
+          </p>
 
           <div className="button-row">
             <WhatsAppButton action="book_table" item={night.name} message={nightMessages.book(night)}>
@@ -128,7 +131,7 @@ export default function NightPage({ params }) {
               action="reserve_bottle"
               item={night.name}
               message={nightMessages.reserve(night)}
-              className="btn btn-outline-gold"
+              className="btn btn-outline"
             >
               Reserve a Martell Bottle
             </WhatsAppButton>
@@ -138,6 +141,7 @@ export default function NightPage({ params }) {
 
       <section className="section section-tight" aria-labelledby="photos-heading">
         <div className="container">
+          <p className="eyebrow">Gallery</p>
           <h2 id="photos-heading">Photos from {night.name}</h2>
           <PhotoGallery photos={photos} emptyText={`Photos from ${night.name} coming soon`} />
         </div>

@@ -16,6 +16,17 @@
   --text: #ffffff;
   --text-muted: rgba(255, 255, 255, 0.72);
 
+  /* Type scale: serif for headings, sans for everything else */
+  --text-label: 0.75rem;
+  --text-small: 0.875rem;
+  --text-lead: 1.0625rem;
+  --text-h3: 1.125rem;
+  --tracking-label: 0.14em;
+
+  /* Space above and below each section */
+  --space-section: 56px;
+  --space-section-tight: 32px;
+
   --radius: 16px;
   --radius-small: 10px;
   --shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.8);
@@ -91,7 +102,8 @@ h2 {
 }
 
 h3 {
-  font-size: 1.0625rem;
+  font-family: var(--font-serif);
+  font-size: var(--text-h3);
   font-weight: 600;
   line-height: 1.3;
 }
@@ -109,16 +121,16 @@ h3 {
 
 .eyebrow {
   color: var(--clr-primary-3);
-  font-size: 0.75rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   margin-bottom: 12px;
 }
 
 .lead {
   color: var(--text-muted);
-  font-size: 1.0625rem;
+  font-size: var(--text-lead);
   max-width: 620px;
 }
 
@@ -127,11 +139,15 @@ h3 {
 }
 
 .section {
-  padding-block: 56px;
+  padding-block: var(--space-section);
 }
 
 .section-tight {
-  padding-block: 24px;
+  padding-block: var(--space-section-tight);
+}
+
+.section-tight:last-child {
+  padding-bottom: var(--space-section);
 }
 
 .section-raised {
@@ -158,6 +174,10 @@ h3 {
 
 .btn:hover {
   transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: none;
 }
 
 .btn-small {
@@ -190,16 +210,8 @@ h3 {
 }
 
 .btn-outline:hover {
-  border-color: #fff;
-}
-
-.btn-outline-gold {
   border-color: var(--clr-primary-3);
   color: var(--clr-primary-3);
-}
-
-.btn-outline-gold:hover {
-  background: rgba(239, 178, 9, 0.12);
 }
 
 .button-row {
@@ -383,7 +395,7 @@ h3 {
   color: var(--clr-primary-3);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -461,7 +473,7 @@ h3 {
   color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -480,7 +492,7 @@ h3 {
   font-weight: 500;
 }
 
-/* The poster is zoomed in on the face. Move transform-origin if a new poster has the face somewhere else. */
+/* The poster is zoomed in on the face: see poster.face in data/nights.ts. */
 .hosted-by-avatar {
   position: relative;
   flex-shrink: 0;
@@ -494,8 +506,6 @@ h3 {
 .hosted-by-avatar img {
   object-fit: cover;
   object-position: top;
-  transform: scale(2.6);
-  transform-origin: 56% 19%;
 }
 
 .night-details-stacked li {
@@ -894,9 +904,9 @@ button.photo-tile:hover img {
 
 .martell-tag {
   color: var(--clr-primary-3);
-  font-size: 0.6875rem;
+  font-size: var(--text-label);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -964,114 +974,382 @@ button.photo-tile:hover img {
   margin-bottom: 8px;
 }
 
-/* Meet your host */
+/* Meet your host: 3D coverflow. --cf-h is the poster height, and the -x and -z values set how far the
+   side posters sit from the centre and how far back they are pushed. */
 .host-section {
-  background: radial-gradient(ellipse at 25% 50%, rgba(239, 178, 9, 0.08), transparent 60%);
+  background: radial-gradient(ellipse at 30% 55%, rgba(239, 178, 9, 0.07), transparent 60%);
   border-top: 1px solid var(--border);
 }
 
-.host-stack {
-  --rank-front: rotate(-2deg);
+.host-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 32px;
+  margin-bottom: 32px;
+}
+
+.host-heading h2 {
+  margin-bottom: 0;
+}
+
+.host-heading .lead {
+  margin-top: 12px;
+}
+
+.host-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+
+.cf-viewport {
+  margin-inline: -16px;
+  padding-top: 8px;
+  overflow-x: clip;
+}
+
+.cf-stage {
+  --cf-h: min(97.5vw, 480px, 72vh);
+  --cf-x1: min(50vw, 250px);
+  --cf-x2: min(74vw, 370px);
+  --cf-x3: min(100vw, 520px);
+  --cf-z1: -200px;
+  --cf-z2: -380px;
+  --cf-z3: -520px;
+  --cf-turn: 40deg;
+  --cf-pose-m3: translate3d(calc(-50% - var(--cf-x3)), 0, var(--cf-z3)) rotateY(var(--cf-turn));
+  --cf-pose-m2: translate3d(calc(-50% - var(--cf-x2)), 0, var(--cf-z2)) rotateY(var(--cf-turn));
+  --cf-pose-m1: translate3d(calc(-50% - var(--cf-x1)), 0, var(--cf-z1)) rotateY(var(--cf-turn));
+  --cf-pose-0: translate3d(-50%, 0, 0);
+  --cf-pose-p1: translate3d(calc(-50% + var(--cf-x1)), 0, var(--cf-z1)) rotateY(calc(var(--cf-turn) * -1));
+  --cf-pose-p2: translate3d(calc(-50% + var(--cf-x2)), 0, var(--cf-z2)) rotateY(calc(var(--cf-turn) * -1));
+  --cf-pose-p3: translate3d(calc(-50% + var(--cf-x3)), 0, var(--cf-z3)) rotateY(calc(var(--cf-turn) * -1));
   position: relative;
-  width: 100%;
-  max-width: 440px;
-  aspect-ratio: 1 / 1.08;
-  margin-inline: auto;
+  height: calc(var(--cf-h) * 1.16);
+  perspective: 1000px;
   touch-action: pan-y;
-  cursor: grab;
   user-select: none;
   -webkit-touch-callout: none;
 }
 
-.host-stack:active {
-  cursor: grabbing;
-}
-
-.host-card {
+.cf-card {
   position: absolute;
-  top: 6%;
-  left: 17%;
-  width: 66%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-  background: var(--bg-card);
-  border: 1px solid var(--border-gold);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transform: translateX(var(--drag, 0px)) var(--rank);
-  transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+  top: 0;
+  left: 50%;
+  height: var(--cf-h);
+  transform: var(--cf-pose);
+  transition: transform 0.75s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 0s linear 0.25s;
   will-change: transform;
 }
 
-.host-card[data-rank="0"] {
-  --rank: var(--rank-front);
-  z-index: 3;
-}
-
-.host-card[data-rank="1"] {
-  --rank: translateX(21%) rotate(6deg) scale(0.94);
-  z-index: 2;
-}
-
-.host-card[data-rank="2"] {
-  --rank: translateX(-21%) rotate(-8deg) scale(0.9);
-  z-index: 1;
-}
-
-.host-card.is-dragging {
+.cf-stage.is-settling .cf-card,
+.cf-stage.is-settling .cf-face::after,
+.cf-stage.is-settling .cf-card::before {
   transition: none;
 }
 
-.host-card img {
-  object-fit: cover;
+.cf-card[data-offset="0"] {
+  --cf-pose: var(--cf-pose-0);
+  z-index: 5;
+}
+
+.cf-card[data-offset="-1"] {
+  --cf-pose: var(--cf-pose-m1);
+  z-index: 3;
+}
+
+.cf-card[data-offset="1"] {
+  --cf-pose: var(--cf-pose-p1);
+  z-index: 3;
+}
+
+.cf-card[data-offset="-2"] {
+  --cf-pose: var(--cf-pose-m2);
+  z-index: 1;
+}
+
+.cf-card[data-offset="2"] {
+  --cf-pose: var(--cf-pose-p2);
+  z-index: 1;
+}
+
+/* The soft gold glow, on the centre poster only */
+.cf-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  box-shadow: 0 0 64px 4px rgba(239, 178, 9, 0.32);
+  opacity: 0;
+  transition: opacity 0.75s ease;
+}
+
+.cf-card[data-offset="0"]::before {
+  opacity: 1;
+}
+
+.cf-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.cf-face img {
+  object-fit: contain;
   pointer-events: none;
 }
 
-.host-card::after {
+.cf-face:focus-visible {
+  outline-offset: 4px;
+}
+
+/* Darkens the side posters. Fading a layer is much lighter on phones than a filter. */
+.cf-face::after {
   content: "";
   position: absolute;
   inset: 0;
   background: #000;
-  opacity: 0.4;
-  transition: opacity 0.7s ease;
+  opacity: 0.6;
+  transition: opacity 0.75s ease;
 }
 
-.host-card[data-rank="0"]::after {
+.cf-card[data-offset="0"] .cf-face::after {
   opacity: 0;
 }
 
-.host-name {
-  margin-bottom: 8px;
-  color: var(--clr-primary-3);
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.25;
+.cf-card[data-offset="1"] .cf-face::after,
+.cf-card[data-offset="-1"] .cf-face::after {
+  opacity: 0.38;
 }
 
-.host-chips {
-  display: flex;
-  flex-wrap: wrap;
+/* The fading mirror image: the poster flipped, showing only its bottom edge */
+.cf-reflection {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  height: 14%;
+  overflow: hidden;
+  opacity: 0.08;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  transition: opacity 0.75s ease;
+}
+
+.cf-card[data-offset="0"] .cf-reflection {
+  opacity: 0.3;
+}
+
+.cf-reflection span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% / 0.14);
+  transform: scaleY(-1);
+}
+
+.cf-reflection img {
+  object-fit: contain;
+}
+
+.cf-controls {
+  display: grid;
+  justify-items: center;
   gap: 8px;
-  margin-top: 20px;
+  padding-inline: 16px;
 }
 
-.host-chip {
-  display: inline-flex;
+.cf-progress {
+  width: 100%;
+  max-width: 320px;
+  height: 2px;
+  overflow: hidden;
+  background: rgba(239, 178, 9, 0.2);
+  border-radius: 1px;
+}
+
+.cf-progress span {
+  display: block;
+  height: 100%;
+  background: var(--clr-primary-3);
+  transform-origin: left;
+}
+
+.cf-buttons {
+  display: flex;
   align-items: center;
-  min-height: 44px;
-  padding: 8px 16px;
+  gap: 4px;
+}
+
+.cf-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   color: var(--clr-primary-3);
   border: 1px solid var(--border-gold);
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  border-radius: 50%;
+  font-size: 1.125rem;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.host-chip:hover {
+.cf-arrow:hover {
   background: rgba(239, 178, 9, 0.12);
   border-color: var(--clr-primary-3);
+}
+
+.cf-dot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 44px;
+}
+
+.cf-dot span {
+  width: 8px;
+  height: 8px;
+  background: rgba(239, 178, 9, 0.3);
+  border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cf-dot[aria-current] span,
+.cf-dot:hover span {
+  background: var(--clr-primary-3);
+}
+
+.cf-dot[aria-current] span {
+  transform: scale(1.25);
+}
+
+/* MON, WED, FRI... shown on hover */
+.cf-dot::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: -4px;
+  color: var(--clr-primary-3);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.2s ease;
+}
+
+.cf-dot:hover::after,
+.cf-dot:focus-visible::after {
+  opacity: 1;
+}
+
+.host-panel {
+  position: relative;
+  z-index: 6;
+}
+
+.host-panel-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.host-panel-day {
+  color: var(--clr-primary-3);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.host-panel-title {
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.host-panel-venue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.host-venue-logo {
+  position: relative;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+}
+
+.host-venue-logo img {
+  object-fit: contain;
+  mix-blend-mode: lighten;
+}
+
+.host-venue-badge {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  color: var(--clr-primary-3);
+  border: 1px solid var(--border-gold);
+  border-radius: 999px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+}
+
+.host-panel-meta {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: var(--text-small);
+}
+
+/* Reduced motion: a plain row of posters to swipe through */
+.cf-row {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  margin-inline: -16px;
+  padding: 4px 16px 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-gold) transparent;
+}
+
+.cf-row-item {
+  position: relative;
+  flex: 0 0 auto;
+  height: min(97.5vw, 440px);
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  scroll-snap-align: center;
+}
+
+.cf-row-item[aria-current] {
+  border-color: var(--clr-primary-3);
+}
+
+.cf-row-item img {
+  object-fit: contain;
 }
 
 /* Partners */
@@ -1163,7 +1441,7 @@ a.partner-card:hover {
   color: var(--clr-primary-3);
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -1295,7 +1573,6 @@ html[data-age-ok] .age-gate {
 
 /* Footer */
 .site-footer {
-  margin-top: 40px;
   padding-block: 40px calc(88px + env(safe-area-inset-bottom));
   background: var(--bg-raised);
   border-top: 1px solid var(--border);
@@ -1314,7 +1591,7 @@ html[data-age-ok] .age-gate {
   font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   line-height: 1.4;
   text-transform: uppercase;
 }
@@ -1396,8 +1673,34 @@ html[data-age-ok] .age-gate {
     animation-play-state: paused;
   }
 
-  .host-card.is-leaving {
-    animation: host-shuffle-move 0.8s ease-in-out, host-shuffle-layer 0.8s linear;
+  .cf-card.is-wrap-left {
+    animation: cf-wrap-left 0.75s ease;
+  }
+
+  .cf-card.is-wrap-right {
+    animation: cf-wrap-right 0.75s ease;
+  }
+
+  .cf-progress span {
+    animation: cf-progress 5s linear forwards;
+  }
+
+  .cf-paused .cf-progress span {
+    animation-play-state: paused;
+  }
+
+  .host-step {
+    animation: soft-rise 0.55s ease backwards;
+    animation-delay: calc(var(--step, 0) * 90ms);
+  }
+
+  .reveal-pending {
+    opacity: 0;
+  }
+
+  .reveal-in {
+    animation: soft-rise-far 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: var(--reveal-delay, 0ms);
   }
 
   @media (hover: hover) {
@@ -1456,26 +1759,49 @@ html[data-age-ok] .age-gate {
   }
 }
 
-@keyframes host-shuffle-move {
-  0% {
-    transform: translateX(var(--drag, 0px)) var(--rank-front);
-  }
-  45% {
-    transform: translateX(calc(var(--swipe, 1) * 62%)) rotate(calc(var(--swipe, 1) * 9deg));
-  }
-  100% {
-    transform: var(--rank);
+@keyframes cf-progress {
+  from {
+    transform: scaleX(0);
   }
 }
 
-@keyframes host-shuffle-layer {
-  0%,
-  45% {
-    z-index: 5;
+/* A poster that has to cross from one end of the row to the other fades out and comes back at the far side,
+   instead of flying across behind the centre. */
+@keyframes cf-wrap-left {
+  0% {
+    opacity: 1;
+    transform: var(--cf-from);
   }
-  46%,
+  45% {
+    opacity: 0;
+    transform: var(--cf-pose-m3);
+  }
+  46% {
+    opacity: 0;
+    transform: var(--cf-pose-p3);
+  }
   100% {
-    z-index: 0;
+    opacity: 1;
+    transform: var(--cf-pose);
+  }
+}
+
+@keyframes cf-wrap-right {
+  0% {
+    opacity: 1;
+    transform: var(--cf-from);
+  }
+  45% {
+    opacity: 0;
+    transform: var(--cf-pose-p3);
+  }
+  46% {
+    opacity: 0;
+    transform: var(--cf-pose-m3);
+  }
+  100% {
+    opacity: 1;
+    transform: var(--cf-pose);
   }
 }
 
@@ -1561,12 +1887,9 @@ html[data-age-ok] .age-gate {
     --header-height: 76px;
   }
 
-  .section {
-    padding-block: 80px;
-  }
-
-  .section-tight {
-    padding-block: 32px;
+  :root {
+    --space-section: 80px;
+    --space-section-tight: 40px;
   }
 
   .page-header {
@@ -1603,6 +1926,33 @@ html[data-age-ok] .age-gate {
   .split {
     grid-template-columns: 1fr 1fr;
     gap: 48px;
+  }
+
+  .host-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: center;
+    gap: 48px;
+  }
+
+  .cf-viewport {
+    margin-inline: 0;
+    overflow-x: visible;
+  }
+
+  .cf-stage {
+    --cf-h: min(36vw, 460px);
+    --cf-x1: min(13.8vw, 177px);
+    --cf-x2: min(21vw, 270px);
+    --cf-x3: min(26vw, 330px);
+    --cf-z1: -170px;
+    --cf-z2: -320px;
+    --cf-z3: -440px;
+    perspective: 1200px;
+  }
+
+  .cf-row {
+    margin-inline: 0;
+    padding-inline: 0;
   }
 
   .photo-grid {

@@ -75,7 +75,10 @@ export default function DrinksPage() {
               priority
               className="martell-logo"
             />
-            <h2 id="martell-heading">Martell · Official Brand Ambassador in Uganda</h2>
+            <div>
+              <p className="eyebrow">Our signature</p>
+              <h2 id="martell-heading">Martell · Official Brand Ambassador in Uganda</h2>
+            </div>
           </div>
           <RevealList className="bottle-grid bottle-grid-large">
             {MARTELL_BOTTLES.map((bottle) => (
@@ -87,6 +90,7 @@ export default function DrinksPage() {
 
       <section className="section" aria-labelledby="also-heading">
         <div className="container">
+          <p className="eyebrow">More bottles</p>
           <h2 id="also-heading">Also available</h2>
           <ul className="bottle-grid">
             {OTHER_BOTTLES.map((bottle) => (
@@ -98,6 +102,7 @@ export default function DrinksPage() {
 
       <section className="section section-raised" aria-labelledby="wines-heading">
         <div className="container center">
+          <p className="eyebrow">Wine</p>
           <h2 id="wines-heading">Wines from our Magnum store</h2>
           <p className="lead">Looking for wine? Visit Magnum, our own wine store in Kololo, Kampala.</p>
           <div className="button-row button-row-center">

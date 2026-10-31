@@ -22,6 +22,7 @@ export default function GalleryPage() {
       </section>
       <section className="section" aria-labelledby="videos-heading">
         <div className="container">
+          <p className="eyebrow">Videos</p>
           <h2 id="videos-heading">Watch</h2>
           <VideoGrid videos={videos} />
         </div>

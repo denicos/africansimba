@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
 
 export default function Lightbox({ photos, index, onChange, onClose }) {
+  const closeButton = useRef(null);
+
   const step = useCallback(
     (delta) => onChange((index + delta + photos.length) % photos.length),
     [index, onChange, photos.length]
@@ -21,15 +23,18 @@ export default function Lightbox({ photos, index, onChange, onClose }) {
   }, [onClose, step]);
 
   useEffect(() => {
+    const opener = document.activeElement;
     document.body.style.overflow = "hidden";
+    closeButton.current?.focus({ preventScroll: true });
     return () => {
       document.body.style.overflow = "";
+      opener?.focus?.({ preventScroll: true });
     };
   }, []);
 
   return (
     <div className="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
-      <button type="button" className="lightbox-button lightbox-close" onClick={onClose} aria-label="Close photo viewer">
+      <button ref={closeButton} type="button" className="lightbox-button lightbox-close" onClick={onClose} aria-label="Close photo viewer">
         <FiX aria-hidden="true" />
       </button>
       <button type="button" className="lightbox-button lightbox-prev" onClick={() => step(-1)} aria-label="Previous photo">

@@ -59,6 +59,7 @@ export default function MagnumPage() {
 
       <section className="section section-tight" aria-labelledby="magnum-photos">
         <div className="container">
+          <p className="eyebrow">The store</p>
           <h2 id="magnum-photos">Inside Magnum</h2>
           <PhotoGallery photos={photos} emptyText="Photos of Magnum coming soon" />
         </div>
@@ -66,6 +67,7 @@ export default function MagnumPage() {
 
       <section className="section section-tight" aria-labelledby="magnum-map">
         <div className="container">
+          <p className="eyebrow">Location</p>
           <h2 id="magnum-map">Find us</h2>
           {MAGNUM.mapEmbedUrl ? (
             <iframe

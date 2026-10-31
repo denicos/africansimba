@@ -6,6 +6,7 @@ import Analytics from "../components/Analytics";
 import Footer from "../components/Footer";
 import JsonLd from "../components/JsonLd";
 import NavBar from "../components/NavBar";
+import ScrollReveal from "../components/ScrollReveal";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { SITE, SOCIALS } from "../data/site";
 import { OG_IMAGE } from "../lib/metadata";
@@ -81,6 +82,7 @@ export default function RootLayout({ children }) {
           className="whatsapp-float"
           label="Chat with African Simba Events on WhatsApp"
         />
+        <ScrollReveal />
         <Analytics />
       </body>
     </html>
