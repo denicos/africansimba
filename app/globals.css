@@ -964,8 +964,8 @@ button.photo-tile:hover img {
   padding: 24px;
   opacity: 0;
   visibility: hidden;
-  transform: scale(1.05);
-  transition: opacity 0.9s ease, transform 1.2s ease, visibility 0s linear 0.9s;
+  transform: scale(1.04);
+  transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
   will-change: opacity, transform;
 }
 
@@ -973,7 +973,7 @@ button.photo-tile:hover img {
   opacity: 1;
   visibility: visible;
   transform: none;
-  transition: opacity 0.9s ease, transform 1.2s ease, visibility 0s;
+  transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
 }
 
 .martell-slide img {
@@ -1959,12 +1959,12 @@ html[data-age-ok] .age-gate {
 /* Motion for the showcase, the host cards and the /drinks cards. Only transform and opacity move, so it stays smooth. */
 @media (prefers-reduced-motion: no-preference) {
   .martell-caption {
-    animation: soft-rise 0.7s ease backwards;
+    animation: soft-rise 0.4s ease backwards;
   }
 
   .martell-dot i {
     transform-origin: left;
-    animation: martell-progress 4s linear forwards;
+    animation: martell-progress 2.5s linear forwards;
   }
 
   .martell-showcase.is-paused .martell-dot i {
