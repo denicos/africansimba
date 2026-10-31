@@ -26,7 +26,7 @@ export default function HomePage() {
       <TonightTitle />
       <section className="hero">
         <Image
-          src="/videos/hero-poster.jpg"
+          src="/images/hero-poster.jpg"
           alt="A group of friends dancing under colourful lights at a nightclub"
           fill
           priority

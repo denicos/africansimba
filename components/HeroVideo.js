@@ -10,8 +10,9 @@ function shouldPlayVideo() {
   return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// The poster image sits behind this. The video is only added in the browser, so visitors with reduced motion,
-// Save-Data or a slow connection never download it. To change the clip, replace the files in public/videos/.
+// The poster image sits behind this and stays on show until the video really plays, so phones that block autoplay
+// (like iPhones in Low Power Mode) still get a full picture. The video is only added in the browser, so visitors
+// with reduced motion, Save-Data or a slow connection never download it. To change the clip, replace the files in public/videos/.
 export default function HeroVideo() {
   const video = useRef(null);
   const [isAllowed, setIsAllowed] = useState(false);
@@ -42,7 +43,7 @@ export default function HeroVideo() {
       muted
       playsInline
       preload="auto"
-      poster="/videos/hero-poster.jpg"
+      poster="/images/hero-poster.jpg"
       aria-hidden="true"
       onPlaying={() => setIsPlaying(true)}
     >

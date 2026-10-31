@@ -1,6 +1,6 @@
 # Homepage hero video
 
-Files: hero-bg.mp4, hero-bg.webm, club-bg.mp4 (copy of hero-bg.mp4), hero-poster.jpg (a frame from the clip)
+Files: hero-bg.mp4, hero-bg.webm, club-bg.mp4 (copy of hero-bg.mp4), and public/images/hero-poster.jpg (a frame from the clip)
 
 - Title: People Dancing Together
 - Source: https://www.pexels.com/video/people-dancing-together-6174190/
