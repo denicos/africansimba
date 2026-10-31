@@ -3,26 +3,10 @@
 import React from 'react';
 import { Box, Flex, Heading, Text, SimpleGrid, VStack, HStack, Container, Icon } from "@chakra-ui/react";
 import Image from "next/image";
-import Head from "next/head";
 import { motion } from 'framer-motion';
 import { FiMic, FiCamera, FiUsers, FiStar, FiMonitor, FiTarget } from "react-icons/fi";
 
-const MotionBox = motion(Box);
-
-// Structured data for SEO
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "African Simba Events",
-  "description": "We are a team of passionate professionals dedicated to delivering top-notch experiences in everything we do.",
-  "founder": {
-    "@type": "Person",
-    "name": "African Simba",
-    "jobTitle": "Chief Executive Officer"
-  },
-  "services": ["Hosting", "Marketing", "Event Planning", "Talent Management", "Video Coverage", "Conceptualisation"],
-  "mission": "Our mission is to create and execute exceptional events that helps people celebrate life."
-};
+const MotionBox = motion.create(Box);
 
 const services = [
   { name: "Hosting", icon: FiMic, description: "Professional hosting for events of all scales" },
@@ -225,24 +209,7 @@ CEOSection.displayName = 'CEOSection';
 const About = () => {
   return (
     <>
-      <Head>
-        <title>About Us - African Simba Events | Professional Event Management</title>
-        <meta
-          name="description"
-          content="Learn about African Simba Events - a team of passionate professionals delivering exceptional event experiences."
-        />
-        <meta property="og:title" content="About Us - African Simba Events" />
-        <meta property="og:description" content="Professional event management team dedicated to creating memorable experiences." />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/haul/simba.webp" />
-        <link rel="canonical" href="/about" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      </Head>
-
-      <Container maxW="container.xl" px={{ base: 4, md: 8 }} py={{ base: 10, md: 16 }} as="main">
+      <Container maxW="container.xl" px={{ base: 4, md: 8 }} py={{ base: 10, md: 16 }}>
         {/* About & Mission - Bento Grid */}
         <SimpleGrid
           columns={{ base: 1, lg: 5 }}
@@ -351,7 +318,7 @@ const About = () => {
                 lineHeight="1.6"
                 fontStyle="italic"
               >
-                "To create and execute exceptional events that help people celebrate life through innovative and effective solutions."
+                &quot;To create and execute exceptional events that help people celebrate life through innovative and effective solutions.&quot;
               </Text>
               <Box
                 w="40px"

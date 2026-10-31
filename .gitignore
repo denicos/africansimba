@@ -41,3 +41,7 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+
+# ssh keys - never commit
+fred
+fred.pub

@@ -1,0 +1,103 @@
+// The 5 weekly nights, Monday to Sunday.
+// Photos: drop them in public/images/nights/<folder>/ and redeploy.
+
+export type Night = {
+  slug: string;
+  name: string;
+  weekday: string;
+  venue: string;
+  area: string;
+  startTime: string; // e.g. "21:00" (24-hour). Empty shows "to be confirmed".
+  folder: string;
+  tagline: string;
+};
+
+export const VENUES: Record<string, { area: string }> = {
+  Thrones: { area: "Bugolobi" },
+  Nomad: { area: "Ggaba Road" },
+  Vanquish: { area: "" }, // TODO: Vanquish area in Kampala
+};
+
+export const NIGHTS: Night[] = [
+  {
+    slug: "bandali-mondays",
+    name: "Bandali Mondays",
+    weekday: "Monday",
+    venue: "Thrones",
+    area: VENUES.Thrones.area,
+    startTime: "", // TODO: start time
+    folder: "bandali",
+    tagline: "Start the week right, with Martell at Thrones.",
+  },
+  {
+    slug: "wahala-wednesday",
+    name: "Wahala Wednesday",
+    weekday: "Wednesday",
+    venue: "Thrones",
+    area: VENUES.Thrones.area,
+    startTime: "", // TODO: start time
+    folder: "wahala",
+    tagline: "Midweek party madness at Thrones.",
+  },
+  {
+    slug: "swift-fridays",
+    name: "Swift Fridays",
+    weekday: "Friday",
+    venue: "Nomad",
+    area: VENUES.Nomad.area,
+    startTime: "", // TODO: start time
+    folder: "swift",
+    tagline: "Kick off the weekend at Nomad.",
+  },
+  {
+    slug: "illicit-saturday",
+    name: "Illicit Saturday",
+    weekday: "Saturday",
+    venue: "Vanquish",
+    area: VENUES.Vanquish.area,
+    startTime: "", // TODO: start time
+    folder: "illicit",
+    tagline: "Saturday night, the way it should be, at Vanquish.",
+  },
+  {
+    slug: "belle-vie-sunday",
+    name: "Belle Vie Sunday",
+    weekday: "Sunday",
+    venue: "Vanquish",
+    area: VENUES.Vanquish.area,
+    startTime: "", // TODO: start time
+    folder: "belle-vie",
+    tagline: "Close the week living the good life at Vanquish.",
+  },
+];
+
+const WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+export function getNight(slug: string) {
+  return NIGHTS.find((night) => night.slug === slug);
+}
+
+export function nightLocation(night: Night) {
+  return night.area ? `${night.area}, Kampala` : "Kampala";
+}
+
+export function kampalaWeekday(date = new Date()) {
+  return new Intl.DateTimeFormat("en-US", { weekday: "long", timeZone: "Africa/Kampala" }).format(date);
+}
+
+// Tonight's night, or the next one on days without a night (Tuesday, Thursday).
+export function getHighlight(weekday: string) {
+  const today = WEEK.indexOf(weekday);
+  for (let offset = 0; offset < WEEK.length; offset++) {
+    const night = NIGHTS.find((n) => n.weekday === WEEK[(today + offset) % WEEK.length]);
+    if (night) return { slug: night.slug, label: offset === 0 ? "Tonight" : "Next up" };
+  }
+  return null;
+}
+
+// The next date this night happens, as YYYY-MM-DD in Kampala time.
+export function nextOccurrence(night: Night, from = new Date()) {
+  const daysAhead = (WEEK.indexOf(night.weekday) - WEEK.indexOf(kampalaWeekday(from)) + 7) % 7;
+  const date = new Date(from.getTime() + daysAhead * 24 * 60 * 60 * 1000);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Kampala" }).format(date);
+}

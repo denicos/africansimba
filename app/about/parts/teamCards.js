@@ -22,7 +22,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { FiExternalLink, FiBriefcase, FiStar, FiAward } from "react-icons/fi";
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 const teamMembers = [
     {

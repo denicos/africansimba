@@ -1,41 +1,21 @@
+import { pageMetadata } from "../../lib/metadata";
+import AboutUs from "./parts/about";
+import AboutHero from "./parts/about.hero";
+import TeamSection from "./parts/teamCards";
 
-import React, { Suspense } from 'react'
+export const metadata = pageMetadata({
+  title: "About African Simba Events | Kampala Event Company",
+  description:
+    "Meet African Simba Events, the Kampala events team behind five weekly nights and the official Martell brand ambassador in Uganda.",
+  path: "/about",
+});
 
-import BackgroundCarousel from '../home/parts/BackgroundCarousel'
-import { Box } from '@chakra-ui/react'
-
-
-
-import AboutUs from './parts/about'
-import TeamSection from './parts/teamCards'
-import AboutHero from './parts/about.hero'
-import DarkFooter from '../components/Footer.dark'
-import Footer from '../components/Footer'
-
-
-export const metadata = {
-    title: 'About Us',
-    openGraph: {
-      title: 'About us',
-    },
-  }
 export default function About() {
-    return (
-        <div>
-            <Suspense>
-
-
-                <Box position='relative' w='100vw'>
-                    <BackgroundCarousel />
-                    <AboutHero/>
-                    <Box position="relative" zIndex="1">
-                        <AboutUs />
-                       <TeamSection/>
-                        {/* <ProductDetails/> */}
-<Footer/>
-                    </Box>
-                </Box>
-            </Suspense>
-        </div>
-    )
+  return (
+    <>
+      <AboutHero />
+      <AboutUs />
+      <TeamSection />
+    </>
+  );
 }
