@@ -34,6 +34,8 @@ export const SOCIALS = {
 };
 
 export const MAGNUM = {
+  name: "Magnum Liquors",
+  location: "Kololo, Kampala",
   hours: "", // TODO: opening hours, e.g. "Mon-Sat 10am-10pm, Sun 12pm-8pm"
   mapEmbedUrl: "", // TODO: Google Maps "Embed a map" src URL for the Kololo store
 };
@@ -50,9 +52,9 @@ export const MARTELL_LOGO = {
 export const PARTNERS = [
   { name: "Martell", label: "Official Brand Ambassador", logo: MARTELL_LOGO.src, logoWidth: MARTELL_LOGO.width, logoHeight: MARTELL_LOGO.height, href: "/drinks", featured: true },
   { name: "Thrones", label: "Bugolobi", logo: "/images/partners/thrones-logo.webp", logoWidth: 400, logoHeight: 400, href: "/nights/bandali-mondays" },
-  { name: "Vanquish", label: "Kampala", logo: "/images/partners/vanquish-logo-full.webp", logoWidth: 460, logoHeight: 440, href: "/nights/illicit-saturday" },
+  { name: "Vanquish", label: "Kololo", logo: "/images/partners/vanquish-logo-full.webp", logoWidth: 460, logoHeight: 440, href: "/nights/illicit-saturday" },
   { name: "Nomad", label: "Ggaba Road", logo: "", href: "/nights/swift-fridays" }, // TODO: Nomad logo
-  { name: "Magnum", label: "Our store", logo: "/images/partners/magnum-logo.webp", logoWidth: 315, logoHeight: 89, href: "/magnum" },
+  { name: "Magnum", label: "Our store · Kololo", logo: "/images/partners/magnum-logo.webp", logoWidth: 315, logoHeight: 89, href: "/magnum" },
 ];
 
 // Our resident host, shown in "Meet Your Host" and on the night pages. The posters are set in data/nights.ts.

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaInstagram, FaSnapchat, FaTiktok, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
-import { MARTELL_LOGO, SITE, SOCIALS } from "../data/site";
+import { MAGNUM, MARTELL_LOGO, SITE, SOCIALS } from "../data/site";
 
 const SOCIAL_LINKS = [
   { href: SOCIALS.instagram, label: "Instagram", Icon: FaInstagram },
@@ -46,6 +46,11 @@ export default function Footer() {
               {SITE.legalName}
               <br />
               {address.area}, {address.division}, {address.city}, {address.country}
+            </li>
+            <li>
+              <Link href="/magnum">
+                {MAGNUM.name} – {MAGNUM.location}
+              </Link>
             </li>
           </ul>
         </div>

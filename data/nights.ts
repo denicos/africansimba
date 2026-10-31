@@ -21,7 +21,7 @@ export const NIGHT_HOURS = { start: "18:00", end: "06:00", label: "6 PM – 6 AM
 export const VENUES: Record<string, { area: string; emblem?: string }> = {
   Thrones: { area: "Bugolobi" },
   Nomad: { area: "Ggaba Road" },
-  Vanquish: { area: "", emblem: "/images/partners/vanquish-emblem.webp" }, // TODO: Vanquish area in Kampala
+  Vanquish: { area: "Kololo", emblem: "/images/partners/vanquish-emblem.webp" },
 };
 
 export const NIGHTS: Night[] = [

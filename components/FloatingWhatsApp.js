@@ -2,12 +2,11 @@
 
 import WhatsAppButton from "./WhatsAppButton";
 import useTonight from "../lib/useTonight";
+import { nightMessages } from "../lib/whatsapp";
 
 export default function FloatingWhatsApp() {
   const tonight = useTonight();
-  const message = tonight
-    ? `Hi African Simba, I want to book a table for ${tonight.night.name}.`
-    : "Hi African Simba, I have a question.";
+  const message = tonight ? nightMessages.book(tonight.night) : "Hi African Simba, I have a question.";
 
   return (
     <WhatsAppButton

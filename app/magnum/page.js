@@ -1,10 +1,11 @@
 import { FiClock, FiMapPin } from "react-icons/fi";
 
 import AgeGate from "../../components/AgeGate";
+import JsonLd from "../../components/JsonLd";
 import PageHeader from "../../components/PageHeader";
 import PhotoGallery from "../../components/PhotoGallery";
 import WhatsAppButton from "../../components/WhatsAppButton";
-import { MAGNUM } from "../../data/site";
+import { MAGNUM, SITE } from "../../data/site";
 import { pageMetadata } from "../../lib/metadata";
 import { listPhotos } from "../../lib/photos";
 
@@ -15,11 +16,27 @@ export const metadata = pageMetadata({
   path: "/magnum",
 });
 
+const liquorStore = {
+  "@context": "https://schema.org",
+  "@type": "LiquorStore",
+  name: MAGNUM.name,
+  url: `${SITE.url}/magnum`,
+  telephone: SITE.phoneE164,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Kololo",
+    addressLocality: "Kampala",
+    addressCountry: "UG",
+  },
+  parentOrganization: { "@type": "Organization", name: SITE.name, url: SITE.url },
+};
+
 export default function MagnumPage() {
   const photos = listPhotos("images/magnum", (_file, index) => `Magnum wine store in Kololo, Kampala, photo ${index + 1}`);
 
   return (
     <>
+      <JsonLd data={liquorStore} />
       <AgeGate />
       <PageHeader eyebrow="Our store" title="Magnum – Our wine store in Kololo, Kampala" lead="Wine for your table, your home or your next celebration.">
         <div className="button-row">
@@ -44,7 +61,7 @@ export default function MagnumPage() {
             <li>
               <FiMapPin aria-hidden="true" />
               <span>
-                <strong>Location</strong> Kololo, Kampala
+                <strong>Location</strong> {MAGNUM.name} – {MAGNUM.location}
               </span>
             </li>
             <li>
