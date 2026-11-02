@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa6";
 
 import LiveBadge from "./LiveBadge";
+import MusicNotes from "./MusicNotes";
 import VibeLine from "./VibeLine";
 import WhatsAppButton from "./WhatsAppButton";
 import { NIGHTS, NIGHT_HOURS, nightLocation } from "../data/nights";
@@ -77,7 +78,8 @@ export default function TonightCard({ venueLogos }) {
   const { night, isHappening, isNextUp } = tonight;
 
   return (
-    <div className="tonight-card">
+    <div className={isHappening ? "tonight-card has-music" : "tonight-card"}>
+      {isHappening && <MusicNotes />}
       <Link href={`/nights/${night.slug}`} className="tonight-card-poster" tabIndex={-1} aria-hidden="true">
         {failed.has(night.slug) ? (
           <PosterFallback night={night} logo={venueLogos[night.venue]} />

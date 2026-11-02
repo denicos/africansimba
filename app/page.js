@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import Button from "../components/Button";
+import CrewSection from "../components/CrewSection";
 import HeroVideo from "../components/HeroVideo";
 import HostSection from "../components/HostSection";
 import MartellShowcase from "../components/MartellShowcase";
@@ -66,6 +67,8 @@ export default function HomePage() {
       </section>
 
       <HostSection />
+
+      <CrewSection />
 
       <section className="section section-raised" aria-labelledby="drinks-heading">
         <div className="container split">

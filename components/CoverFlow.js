@@ -7,6 +7,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import Button from "./Button";
 import Lightbox from "./Lightbox";
 import LiveBadge from "./LiveBadge";
+import MusicNotes from "./MusicNotes";
 import VibeLine from "./VibeLine";
 import WhatsAppButton from "./WhatsAppButton";
 import { NIGHTS, VENUES, nightLocation } from "../data/nights";
@@ -33,9 +34,11 @@ const poseName = (offset) => (offset === 0 ? "0" : `${offset < 0 ? "m" : "p"}${M
 function DetailsPanel({ night, tonight, venueLogo, isLive, actions }) {
   const isTonight = tonight?.night.slug === night.slug;
   const logo = VENUES[night.venue].emblem || venueLogo;
+  const isLiveNow = isTonight && tonight.isHappening;
 
   return (
-    <div className="host-panel">
+    <div className={isLiveNow ? "host-panel has-music" : "host-panel"}>
+      {isLiveNow && <MusicNotes />}
       <div aria-live={isLive ? "polite" : "off"}>
         <div key={night.slug}>
           <div className="host-panel-top host-step" style={{ "--step": 0 }}>
@@ -57,7 +60,7 @@ function DetailsPanel({ night, tonight, venueLogo, isLive, actions }) {
               {night.venue}, {nightLocation(night)}
             </span>
           </div>
-          {isTonight && tonight.isHappening && (
+          {isLiveNow && (
             <div className="host-step" style={{ "--step": 2 }}>
               <VibeLine night={night} className="vibe-line host-panel-vibe" />
             </div>

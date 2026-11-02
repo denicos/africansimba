@@ -24,7 +24,7 @@ export const SITE = {
 };
 
 export const SOCIALS = {
-  instagram: "https://www.instagram.com/africansimba_barackeffeck",
+  instagram: "https://www.instagram.com/africansimba_barackeffect",
   tiktok: "https://www.tiktok.com/@africansimba_1",
   x: "https://x.com/African__Simba",
   snapchat: "", // TODO: "African Simba TV" link, once the exact username is confirmed. The icon stays hidden until then.

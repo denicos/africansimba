@@ -6,6 +6,7 @@ import { FiChevronRight, FiMapPin } from "react-icons/fi";
 
 import Button from "./Button";
 import LiveBadge from "./LiveBadge";
+import MusicNotes from "./MusicNotes";
 import VibeLine from "./VibeLine";
 import WhatsAppButton from "./WhatsAppButton";
 import { NIGHTS, VENUES, directionsUrl, nightLocation } from "../data/nights";
@@ -21,10 +22,11 @@ export default function WeekList() {
         const isHighlighted = tonight?.night.slug === night.slug;
         const isLive = isHighlighted && tonight.isHappening;
         const emblem = VENUES[night.venue].emblem;
-        const classes = ["week-card", isHighlighted && "is-highlighted", isLive && "is-live"].filter(Boolean).join(" ");
+        const classes = ["week-card", isHighlighted && "is-highlighted", isLive && "is-live has-music"].filter(Boolean).join(" ");
         return (
           <li key={night.slug}>
             <div className={classes}>
+              {isLive && <MusicNotes />}
               <span className="week-day">{night.weekday}</span>
               <span className="week-info">
                 <Link href={`/nights/${night.slug}`} className="week-name week-card-link">
