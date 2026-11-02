@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & npx next-video sync -w",
+    "dev": "next dev",
     "clean": "rimraf .next",
     "build": "next build",
     "start": "next start",
@@ -21,7 +21,6 @@
     "aos": "^3.0.0-beta.6",
     "framer-motion": "^11.3.19",
     "next": "14.2.5",
-    "next-video": "^1.1.4",
     "react": "^18",
     "react-audio-play": "^1.0.2",
     "react-dom": "^18",
@@ -33,6 +32,7 @@
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@slicemachine/adapter-next": "^0.3.43",
+    "@types/node": "^20.19.43",
     "@types/react": "18.3.24",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.5",
@@ -41,6 +41,7 @@
     "globals": "^15.12.0",
     "prettier": "^3.3.3",
     "sharp": "^0.34.5",
-    "slice-machine-ui": "^2.3.0"
+    "slice-machine-ui": "^2.3.0",
+    "typescript": "^5.9.3"
   }
 }

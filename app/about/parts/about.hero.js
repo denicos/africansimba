@@ -2,8 +2,8 @@
 import { Box, Container, Text, VStack, HStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
-const MotionBox = motion(Box);
-const MotionText = motion(Text);
+const MotionBox = motion.create(Box);
+const MotionText = motion.create(Text);
 
 const AboutHero = () => {
   return (

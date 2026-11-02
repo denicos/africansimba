@@ -1,74 +1,84 @@
+import { Inter, Playfair_Display } from "next/font/google";
 
-import { ChakraProvider } from '@chakra-ui/react'
+import "./globals.css";
 
+import Analytics from "../components/Analytics";
+import FloatingWhatsApp from "../components/FloatingWhatsApp";
+import Footer from "../components/Footer";
+import JsonLd from "../components/JsonLd";
+import NavBar from "../components/NavBar";
+import ScrollReveal from "../components/ScrollReveal";
+import { SITE, SOCIALS } from "../data/site";
+import { OG_IMAGE } from "../lib/metadata";
 
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-body" });
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+  variable: "--font-heading",
+});
 
-import { Questrial } from 'next/font/google'
-
-
-import './globals.css'
-
-import NavBar from './components/NavBar'
-
-import { Metadata} from "next";
-import Script from 'next/script';
-
-
-
-
-/**
- * @type {{ title: { default: string, template: string }, description: string, icons: { icon: string } }}
- */
 export const metadata = {
-  title: {
-    default: 'African Simba Events',
-    template: `%s - African Simba Events`,
+  metadataBase: new URL(SITE.url),
+  title: SITE.title,
+  description: SITE.description,
+  icons: { icon: "/favicon.ico" },
+  openGraph: {
+    title: SITE.title,
+    description: SITE.description,
+    url: "/",
+    siteName: SITE.name,
+    type: "website",
+    locale: "en_UG",
+    images: [OG_IMAGE],
   },
-  description: 'We are a team of passionate professionals dedicated to delivering top-notch experiences in everything we do. From event planning to execution, we believe in creating memorable experiences that make a difference.',
-  icons: {
-    icon: "/favicon.ico",
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.title,
+    description: SITE.description,
+    images: [OG_IMAGE.url],
   },
 };
 
+export const viewport = {
+  themeColor: "#000000",
+};
 
-const questrial = Questrial({
-  subsets: ['latin'],
-  weight: '400',
-  display: 'swap',
-  variable: '--font-questrial',
-})
-
-
-
-
-
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: SITE.name,
+  legalName: SITE.legalName,
+  description: SITE.description,
+  url: SITE.url,
+  logo: `${SITE.url}/logos/simba_white.webp`,
+  image: `${SITE.url}${OG_IMAGE.url}`,
+  telephone: SITE.phoneE164,
+  email: SITE.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: SITE.address.area,
+    addressLocality: SITE.address.city,
+    addressRegion: SITE.address.division,
+    addressCountry: SITE.address.countryCode,
+  },
+  areaServed: { "@type": "City", name: SITE.address.city },
+  sameAs: Object.values(SOCIALS).filter(Boolean),
+};
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-      </head>
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <body>
-        <ChakraProvider>
-          <NavBar />
-          <main className={questrial.className}>
-            {children}
-          </main>     
-         
-          </ChakraProvider>  
+        <JsonLd data={localBusiness} />
+        <NavBar />
+        <main>{children}</main>
+        <Footer />
+        <FloatingWhatsApp />
+        <ScrollReveal />
+        <Analytics />
       </body>
-     
-<Script async src="https://www.googletagmanager.com/gtag/js?id=G-R5TEY7FSET"></Script>
-<Script>
-  {`window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-R5TEY7FSET');`}
-</Script>
     </html>
-  )
+  );
 }
