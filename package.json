@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & npx next-video sync -w",
+    "dev": "next dev",
     "clean": "rimraf .next",
     "build": "next build",
     "start": "next start",
@@ -21,7 +21,6 @@
     "aos": "^3.0.0-beta.6",
     "framer-motion": "^11.3.19",
     "next": "14.2.5",
-    "next-video": "^1.1.4",
     "react": "^18",
     "react-audio-play": "^1.0.2",
     "react-dom": "^18",

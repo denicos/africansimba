@@ -1,4 +1,3 @@
-import { withNextVideo } from "next-video/process";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // The hero video is cached for 30 days, so it starts straight away on repeat visits. When you change the clip,
@@ -23,4 +22,4 @@ const nextConfig = {
   },
 };
 
-export default withNextVideo(nextConfig);
+export default nextConfig;
