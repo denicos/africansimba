@@ -1,30 +1,121 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaInstagram } from "react-icons/fa6";
 
 import CrewModal from "./CrewModal";
-import Vinyl from "./Vinyl";
-import { CREW, crewNights } from "../data/crew";
+import LiveVibe from "./LiveVibe";
+import { CREW, crewNights, isCrewLive } from "../data/crew";
 import useTonight from "../lib/useTonight";
 
-// From 4 members the cards become a swipeable row. Fewer sit centred.
-const ROW_FROM = 4;
+const ROTATE_MS = 3000;
+// Each card waits a little longer before its first change, so they don't all change together.
+const STAGGER_MS = 1100;
+const SWIPE_DISTANCE = 40;
 
-function CrewCard({ member, isOnNow, onOpen }) {
-  const nights = crewNights(member);
+// The card's photos, crossfading one after another. Holds still on hover or touch, and swipes left and right.
+function CrewPhotos({ member, order, reducedMotion, footer }) {
+  const photos = member.gallery.length > 0 ? member.gallery : [member.photo];
+  const [index, setIndex] = useState(Math.max(0, photos.indexOf(member.photo)));
+  const [paused, setPaused] = useState(false);
+  const hasChanged = useRef(false);
+  const swipe = useRef(null);
+  const wasSwiped = useRef(false);
+
+  useEffect(() => {
+    if (paused || reducedMotion || photos.length < 2) return;
+    const wait = hasChanged.current ? ROTATE_MS : ROTATE_MS + order * STAGGER_MS;
+    const timer = setTimeout(() => {
+      hasChanged.current = true;
+      setIndex((previous) => (previous + 1) % photos.length);
+    }, wait);
+    return () => clearTimeout(timer);
+  }, [index, paused, reducedMotion, order, photos.length]);
+
+  const step = (delta) => {
+    hasChanged.current = true;
+    setIndex((previous) => (previous + delta + photos.length) % photos.length);
+  };
+
+  const handlePointerDown = (event) => {
+    wasSwiped.current = false;
+    swipe.current = event.clientX;
+    if (event.pointerType !== "mouse") setPaused(true);
+  };
+
+  const handlePointerUp = (event) => {
+    if (event.pointerType !== "mouse") setPaused(false);
+    if (swipe.current === null) return;
+    const distance = event.clientX - swipe.current;
+    swipe.current = null;
+    if (Math.abs(distance) < SWIPE_DISTANCE || photos.length < 2) return;
+    wasSwiped.current = true;
+    step(distance < 0 ? 1 : -1);
+  };
+
+  // A swipe changes the photo, so it shouldn't also open the profile.
+  const handleClickCapture = (event) => {
+    if (!wasSwiped.current) return;
+    wasSwiped.current = false;
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   return (
-    <article className="crew-card">
-      <button type="button" className="crew-card-open" onClick={onOpen} aria-label={`${member.stageName}, ${member.tagline}. Open profile`}>
+    <span
+      className="crew-card-photos"
+      onPointerEnter={(event) => event.pointerType === "mouse" && setPaused(true)}
+      onPointerLeave={() => setPaused(false)}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => {
+        swipe.current = null;
+        setPaused(false);
+      }}
+      onClickCapture={handleClickCapture}
+    >
+      {photos.map((src, i) => (
+        <Image
+          key={src}
+          src={src}
+          alt=""
+          fill
+          sizes="(max-width: 599px) 70vw, 280px"
+          quality={75}
+          loading="lazy"
+          draggable={false}
+          className={i === index ? "is-active" : undefined}
+        />
+      ))}
+      <span className="crew-card-bottom">
+        {photos.length > 1 && (
+          <span className="crew-card-dots" aria-hidden="true">
+            {photos.map((src, i) => (
+              <i key={src} className={i === index ? "is-active" : undefined} />
+            ))}
+          </span>
+        )}
+        {footer}
+      </span>
+    </span>
+  );
+}
+
+function CrewCard({ member, order, liveNight, reducedMotion, onOpen }) {
+  const nights = crewNights(member);
+  const liveLabel = liveNight ? ` Live now at ${liveNight.name}, ${liveNight.venue}.` : "";
+
+  return (
+    <article className={liveNight ? "crew-card is-live" : "crew-card"}>
+      <button
+        type="button"
+        className="crew-card-open"
+        onClick={onOpen}
+        aria-label={`${member.stageName}, ${member.tagline}.${liveLabel} Open profile`}
+      >
         <span className="crew-card-photo">
-          <Image src={member.photo} alt={`${member.stageName} on the mic`} fill sizes="(max-width: 599px) 80vw, 300px" quality={80} loading="lazy" />
-          {isOnNow && (
-            <span className="crew-on-now">
-              <Vinyl /> ON NOW
-            </span>
-          )}
+          <CrewPhotos member={member} order={order} reducedMotion={reducedMotion} footer={liveNight && <LiveVibe night={liveNight} variant="strip" />} />
         </span>
         <span className="crew-card-body">
           <span className="crew-role">{member.role}</span>
@@ -45,29 +136,45 @@ function CrewCard({ member, isOnNow, onOpen }) {
 export default function CrewSection() {
   const tonight = useTonight();
   const [openSlug, setOpenSlug] = useState(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const openMember = CREW.find((member) => member.slug === openSlug);
+
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setReducedMotion(query.matches);
+    onChange();
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
 
   if (CREW.length === 0) return null;
 
-  const isOnNow = (member) => Boolean(tonight?.isHappening && member.nights.includes(tonight.night.slug));
+  const liveSlug = tonight?.isHappening ? tonight.night.slug : undefined;
+  const liveNightFor = (member) => (isCrewLive(member, liveSlug) ? tonight.night : null);
 
   return (
     <section className="section crew-section" aria-labelledby="crew-heading">
       <div className="container">
-        <div className="center">
+        <header className="crew-intro center">
           <p className="eyebrow">On the mic &amp; on the decks</p>
           <h2 id="crew-heading">The Crew</h2>
           <p className="lead">The voices and sounds behind every African Simba night.</p>
-        </div>
-        <ul className={CREW.length >= ROW_FROM ? "crew-list is-row" : "crew-list"}>
-          {CREW.map((member) => (
+        </header>
+        <ul className="crew-list">
+          {CREW.map((member, order) => (
             <li key={member.slug}>
-              <CrewCard member={member} isOnNow={isOnNow(member)} onOpen={() => setOpenSlug(member.slug)} />
+              <CrewCard
+                member={member}
+                order={order}
+                liveNight={liveNightFor(member)}
+                reducedMotion={reducedMotion}
+                onOpen={() => setOpenSlug(member.slug)}
+              />
             </li>
           ))}
         </ul>
       </div>
-      {openMember && <CrewModal member={openMember} isOnNow={isOnNow(openMember)} onClose={() => setOpenSlug(null)} />}
+      {openMember && <CrewModal member={openMember} liveNight={liveNightFor(openMember)} onClose={() => setOpenSlug(null)} />}
     </section>
   );
 }

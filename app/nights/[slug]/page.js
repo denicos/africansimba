@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 
 import JsonLd from "../../../components/JsonLd";
+import { NightLiveStrip } from "../../../components/LiveVibe";
 import PageHeader from "../../../components/PageHeader";
 import PhotoGallery from "../../../components/PhotoGallery";
 import WhatsAppButton from "../../../components/WhatsAppButton";
@@ -85,7 +86,9 @@ export default function NightPage({ params }) {
   return (
     <>
       <JsonLd data={eventJsonLd(night)} />
-      <PageHeader eyebrow={`Every ${night.weekday}`} title={`${night.name} at ${night.venue}`} lead={night.tagline} />
+      <PageHeader eyebrow={`Every ${night.weekday}`} title={`${night.name} at ${night.venue}`} lead={night.tagline}>
+        <NightLiveStrip night={night} className="page-header-live" />
+      </PageHeader>
 
       <section className="section section-tight">
         <div className="container">

@@ -6,11 +6,11 @@ import { FaInstagram } from "react-icons/fa6";
 import { FiChevronLeft, FiChevronRight, FiX } from "react-icons/fi";
 
 import Button from "./Button";
-import Vinyl from "./Vinyl";
+import LiveVibe from "./LiveVibe";
 import { crewNights } from "../data/crew";
 
 // A crew member's profile: a swipeable slideshow of their photos, then who they are.
-export default function CrewModal({ member, isOnNow, onClose }) {
+export default function CrewModal({ member, liveNight, onClose }) {
   const closeButton = useRef(null);
   const track = useRef(null);
   const [index, setIndex] = useState(0);
@@ -93,14 +93,8 @@ export default function CrewModal({ member, isOnNow, onClose }) {
         </div>
 
         <div className="crew-modal-info">
-          <div className="crew-modal-top">
-            <span className="crew-role">{member.role}</span>
-            {isOnNow && (
-              <span className="crew-on-now">
-                <Vinyl /> ON NOW
-              </span>
-            )}
-          </div>
+          <span className="crew-role">{member.role}</span>
+          {liveNight && <LiveVibe night={liveNight} variant="strip" vinyl className="is-standalone" />}
           <h3 id={titleId} className="crew-modal-name">
             {member.stageName}
           </h3>

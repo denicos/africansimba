@@ -7,6 +7,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import Button from "./Button";
 import Lightbox from "./Lightbox";
 import LiveBadge from "./LiveBadge";
+import LiveVibe from "./LiveVibe";
 import MusicNotes from "./MusicNotes";
 import VibeLine from "./VibeLine";
 import WhatsAppButton from "./WhatsAppButton";
@@ -257,6 +258,7 @@ export default function CoverFlow({ venueLogos }) {
               onClick={() => posterClick(index)}
             >
               <Image src={item.poster.src} alt={posterAlt(item)} fill sizes={POSTER_SIZES} quality={80} loading="lazy" />
+              {isLiveNight && index === active && index === tonightIndex && <LiveVibe night={item} variant="strip" className="cf-live-strip" />}
             </button>
           ))}
         </div>
@@ -320,6 +322,9 @@ export default function CoverFlow({ venueLogos }) {
                       loading={index === start ? "eager" : "lazy"}
                       draggable={false}
                     />
+                    {isLiveNight && isActive && index === tonightIndex && (
+                      <LiveVibe night={item} variant="strip" className="cf-live-strip" />
+                    )}
                   </button>
                   <div className="cf-reflection" aria-hidden="true">
                     <span>

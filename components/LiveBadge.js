@@ -1,6 +1,6 @@
 "use client";
 
-import Vinyl from "./Vinyl";
+import LiveVibe from "./LiveVibe";
 import WhatsAppButton from "./WhatsAppButton";
 import { nightMessages } from "../lib/whatsapp";
 
@@ -20,7 +20,7 @@ export default function LiveBadge({ tonight }) {
       className="live-badge"
       label={`Live now – book a table for ${night.name} on WhatsApp`}
     >
-      <Vinyl />
+      <LiveVibe night={night} />
       <span className="live-badge-pill">
         <span className="live-badge-dot">
           <i className="live-badge-ping" />

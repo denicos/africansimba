@@ -3,7 +3,8 @@ import { NIGHTS } from "./nights";
 // The MCs and DJs shown in "The Crew" on the homepage, in display order.
 // To add someone: drop their photos in public/images/crew/ and add an entry below.
 // nights takes night slugs from data/nights.ts, e.g. ["bandali-mondays", "illicit-saturday"].
-// While a listed night is live their card shows "ON NOW". Leave it empty to hide the nights line.
+// While a listed night is live their card shows "LIVE NOW". Leave it empty to hide the nights line;
+// until nights are set, the card shows "LIVE NOW" on every live night.
 
 export type CrewMember = {
   slug: string;
@@ -35,6 +36,12 @@ export const CREW: CrewMember[] = [
     nights: [],
   },
 ];
+
+// Whether this member is on tonight. With no nights set yet, they count as on for every live night.
+export function isCrewLive(member: CrewMember, liveSlug: string | undefined) {
+  if (!liveSlug) return false;
+  return member.nights.length === 0 || member.nights.includes(liveSlug);
+}
 
 // The names of the nights this member works, in week order.
 export function crewNights(member: CrewMember) {
