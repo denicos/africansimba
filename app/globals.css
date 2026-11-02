@@ -3268,7 +3268,7 @@ html[data-age-ok] .age-gate {
 .crew-card-photo {
   position: relative;
   display: block;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: #000;
 }
@@ -3282,8 +3282,8 @@ html[data-age-ok] .age-gate {
 }
 
 .crew-card-photos img {
-  object-fit: cover;
-  object-position: center 30%;
+  object-fit: contain;
+  object-position: center bottom;
   opacity: 0;
   transition: opacity 0.9s ease, transform 0.6s ease;
 }
@@ -3292,30 +3292,22 @@ html[data-age-ok] .age-gate {
   opacity: 1;
 }
 
-.crew-card:hover .crew-card-photos img {
-  transform: scale(1.03);
-}
-
-.crew-card-bottom {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  display: grid;
-  gap: 8px;
-  pointer-events: none;
+@media (prefers-reduced-motion: no-preference) {
+  .crew-card:hover .crew-card-photos img {
+    transform: scale(1.03);
+  }
 }
 
 .crew-card-dots {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  z-index: 1;
   display: flex;
   justify-content: center;
   gap: 5px;
-  padding-bottom: 2px;
-}
-
-.crew-card:not(.is-live) .crew-card-dots {
-  padding-bottom: 10px;
+  pointer-events: none;
 }
 
 .crew-card-dots i {
@@ -3472,8 +3464,45 @@ html[data-age-ok] .age-gate {
 .crew-card-body {
   display: grid;
   justify-items: start;
-  gap: 2px;
-  padding: 14px 60px 16px 14px;
+  gap: 1px;
+  padding: 10px 56px 12px 12px;
+}
+
+/* The live strip as a slim row between the photo and the name: "LIVE NOW · night · venue" on one line where it fits */
+.live-strip.is-slim {
+  gap: 8px;
+  min-height: 0;
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(239, 178, 9, 0.3);
+}
+
+.live-strip.is-slim .eq {
+  --eq-h: 14px;
+}
+
+.live-strip.is-slim .live-strip-text {
+  display: block;
+  line-height: 1.35;
+}
+
+.live-strip.is-slim .live-strip-title {
+  display: inline;
+}
+
+.live-strip.is-slim .live-strip-dot {
+  display: inline-block;
+  margin: 0 5px 0 0;
+  vertical-align: 0.05em;
+}
+
+.live-strip.is-slim .live-strip-venue {
+  display: inline;
+  font-size: 0.75rem;
+  white-space: normal;
+}
+
+.live-strip.is-slim .live-strip-venue::before {
+  content: " · ";
 }
 
 .crew-role {
@@ -3488,7 +3517,6 @@ html[data-age-ok] .age-gate {
 }
 
 .crew-card-name {
-  margin-top: 4px;
   font-family: var(--font-serif);
   font-size: 1.25rem;
   font-weight: 700;
@@ -3497,7 +3525,7 @@ html[data-age-ok] .age-gate {
 
 .crew-card-tagline {
   color: var(--text-muted);
-  font-size: var(--text-small);
+  font-size: 0.8125rem;
 }
 
 .crew-card-nights {
@@ -3508,17 +3536,24 @@ html[data-age-ok] .age-gate {
 
 .crew-card-instagram {
   position: absolute;
-  right: 10px;
-  bottom: 12px;
+  right: 12px;
+  bottom: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--border);
   border-radius: 50%;
-  font-size: 1.25rem;
+  font-size: 1.0625rem;
   transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+/* Keeps a 44px tap area around the smaller icon */
+.crew-card-instagram::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
 }
 
 .crew-card-instagram:hover,

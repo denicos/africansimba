@@ -10,31 +10,45 @@ import { CREW, crewNights, isCrewLive } from "../data/crew";
 import useTonight from "../lib/useTonight";
 
 const ROTATE_MS = 3000;
+// With reduced motion the photos still change, just more slowly and without the zoom.
+const REDUCED_ROTATE_MS = 5000;
 // Each card waits a little longer before its first change, so they don't all change together.
 const STAGGER_MS = 1100;
+// How close the section gets to the screen before all the photos start loading.
+const PRELOAD_MARGIN = "400px 0px";
 const SWIPE_DISTANCE = 40;
 
 // The card's photos, crossfading one after another. Holds still on hover or touch, and swipes left and right.
-function CrewPhotos({ member, order, reducedMotion, footer }) {
+function CrewPhotos({ member, order, reducedMotion, isNear }) {
   const photos = member.gallery.length > 0 ? member.gallery : [member.photo];
   const [index, setIndex] = useState(Math.max(0, photos.indexOf(member.photo)));
   const [paused, setPaused] = useState(false);
-  const hasChanged = useRef(false);
+  const hasStarted = useRef(false);
   const swipe = useRef(null);
   const wasSwiped = useRef(false);
 
+  // One steady timer. Only a hover or touch stops it, and it starts again as soon as that ends.
+  const count = photos.length;
   useEffect(() => {
-    if (paused || reducedMotion || photos.length < 2) return;
-    const wait = hasChanged.current ? ROTATE_MS : ROTATE_MS + order * STAGGER_MS;
-    const timer = setTimeout(() => {
-      hasChanged.current = true;
-      setIndex((previous) => (previous + 1) % photos.length);
-    }, wait);
-    return () => clearTimeout(timer);
-  }, [index, paused, reducedMotion, order, photos.length]);
+    if (paused || count < 2) return;
+    const every = reducedMotion ? REDUCED_ROTATE_MS : ROTATE_MS;
+    const advance = () => setIndex((previous) => (previous + 1) % count);
+    let interval;
+    const start = setTimeout(
+      () => {
+        advance();
+        interval = setInterval(advance, every);
+      },
+      every + (hasStarted.current ? 0 : order * STAGGER_MS)
+    );
+    hasStarted.current = true;
+    return () => {
+      clearTimeout(start);
+      clearInterval(interval);
+    };
+  }, [paused, reducedMotion, order, count]);
 
   const step = (delta) => {
-    hasChanged.current = true;
     setIndex((previous) => (previous + delta + photos.length) % photos.length);
   };
 
@@ -81,28 +95,25 @@ function CrewPhotos({ member, order, reducedMotion, footer }) {
           src={src}
           alt=""
           fill
-          sizes="(max-width: 599px) 70vw, 280px"
+          sizes="320px"
           quality={75}
-          loading="lazy"
+          loading={isNear ? "eager" : "lazy"}
           draggable={false}
           className={i === index ? "is-active" : undefined}
         />
       ))}
-      <span className="crew-card-bottom">
-        {photos.length > 1 && (
-          <span className="crew-card-dots" aria-hidden="true">
-            {photos.map((src, i) => (
-              <i key={src} className={i === index ? "is-active" : undefined} />
-            ))}
-          </span>
-        )}
-        {footer}
-      </span>
+      {photos.length > 1 && (
+        <span className="crew-card-dots" aria-hidden="true">
+          {photos.map((src, i) => (
+            <i key={src} className={i === index ? "is-active" : undefined} />
+          ))}
+        </span>
+      )}
     </span>
   );
 }
 
-function CrewCard({ member, order, liveNight, reducedMotion, onOpen }) {
+function CrewCard({ member, order, liveNight, reducedMotion, isNear, onOpen }) {
   const nights = crewNights(member);
   const liveLabel = liveNight ? ` Live now at ${liveNight.name}, ${liveNight.venue}.` : "";
 
@@ -115,10 +126,10 @@ function CrewCard({ member, order, liveNight, reducedMotion, onOpen }) {
         aria-label={`${member.stageName}, ${member.tagline}.${liveLabel} Open profile`}
       >
         <span className="crew-card-photo">
-          <CrewPhotos member={member} order={order} reducedMotion={reducedMotion} footer={liveNight && <LiveVibe night={liveNight} variant="strip" />} />
+          <CrewPhotos member={member} order={order} reducedMotion={reducedMotion} isNear={isNear} />
         </span>
+        {liveNight && <LiveVibe night={liveNight} variant="strip" className="is-slim" />}
         <span className="crew-card-body">
-          <span className="crew-role">{member.role}</span>
           <span className="crew-card-name">{member.stageName}</span>
           <span className="crew-card-tagline">{member.tagline}</span>
           {nights.length > 0 && <span className="crew-card-nights">{nights.join(" · ")}</span>}
@@ -137,6 +148,8 @@ export default function CrewSection() {
   const tonight = useTonight();
   const [openSlug, setOpenSlug] = useState(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isNear, setIsNear] = useState(false);
+  const section = useRef(null);
   const openMember = CREW.find((member) => member.slug === openSlug);
 
   useEffect(() => {
@@ -147,13 +160,28 @@ export default function CrewSection() {
     return () => query.removeEventListener("change", onChange);
   }, []);
 
+  // Loads every photo once the section is close, so the next one is always ready when its turn comes.
+  useEffect(() => {
+    if (!section.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsNear(true);
+        observer.disconnect();
+      },
+      { rootMargin: PRELOAD_MARGIN }
+    );
+    observer.observe(section.current);
+    return () => observer.disconnect();
+  }, []);
+
   if (CREW.length === 0) return null;
 
   const liveSlug = tonight?.isHappening ? tonight.night.slug : undefined;
   const liveNightFor = (member) => (isCrewLive(member, liveSlug) ? tonight.night : null);
 
   return (
-    <section className="section crew-section" aria-labelledby="crew-heading">
+    <section ref={section} className="section crew-section" aria-labelledby="crew-heading">
       <div className="container">
         <header className="crew-intro center">
           <p className="eyebrow">On the mic &amp; on the decks</p>
@@ -168,6 +196,7 @@ export default function CrewSection() {
                 order={order}
                 liveNight={liveNightFor(member)}
                 reducedMotion={reducedMotion}
+                isNear={isNear}
                 onOpen={() => setOpenSlug(member.slug)}
               />
             </li>
